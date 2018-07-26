@@ -10,31 +10,34 @@
       <div 
         v-for="(el, index) in dataFiltered"
         @click="onSelect(el)"
-        :key="el.id"
-      class="list-complete-item"
+        :key="index"
+        class="list-complete-item"
       >
-        <v-divider v-if="index === 0"/>
         <v-list-tile 
-          :key="el.id" 
-          ripple
+          :key="index"
         >
+        <v-list-tile-action>
+          <v-btn flat icon @click="clicked(index)">
+            <v-icon>subdirectory_arrow_right</v-icon>
+          </v-btn>
+        </v-list-tile-action>
           <v-list-tile-title>
-            {{index}}. {{el.name}}
+            {{prename}}{{index}}: {{el.name}}
           </v-list-tile-title>
           <v-spacer/>
-          <v-icon class="handle">menu</v-icon>
+          <v-icon class="handle">drag_handle</v-icon>
         </v-list-tile>
-        <v-divider/>
+        <v-divider v-if="index < dataFiltered.length - 1"/>
       </div>
     </transition-group>
     </draggable>
   </v-list>
 </template>
 <script>
-import draggable from "vuedraggable";
+import draggable from 'vuedraggable'
 
 export default {
-  name: "DraggableList",
+  name: 'DraggableList',
   props: {
     data: {
       type: Array,
@@ -44,33 +47,46 @@ export default {
       type: Function,
       required: true
     },
+    clicked: {
+      type: Function,
+      required: false,
+      default: null
+    },
     name: {
       type: String,
       required: false,
-      default: "name"
+      default: 'name'
+    },
+    prename: {
+      type: String,
+      required: false,
+      default: ''
     }
   },
-  data() {
-    return {};
+  data () {
+    return {
+    }
   },
   computed: {
     dataFiltered: {
-      get() {
-        return this.data;
+      get () {
+        return this.data
       },
-      set(data) {
-        this.update(data);
+      set (data) {
+        this.update(data)
       }
     }
   },
   components: { draggable },
-  methods: {}
-};
+  methods: {
+    onSelect (el) {}
+  }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .list-complete-item {
-  transition: all 0.3s;
+  transition: all 1s;
 }
 </style>

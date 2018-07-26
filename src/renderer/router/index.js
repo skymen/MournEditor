@@ -7,12 +7,17 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'welcome-view',
+      name: 'start',
+      component: require('@/components/Index').default
+    },
+    {
+      path: '/info',
+      name: 'info',
       component: require('@/components/PluginInfo').default
     },
     {
       path: '/props',
-      name: 'info',
+      name: 'props',
       component: require('@/components/PluginProps').default
     },
     {
@@ -34,6 +39,11 @@ export default new Router({
       path: '/aces',
       name: 'aces',
       component: require('@/components/ACES').default
+    },
+    {
+      path: '/export',
+      name: 'export',
+      component: require('@/components/Export').default
     },
     {
       path: '*',

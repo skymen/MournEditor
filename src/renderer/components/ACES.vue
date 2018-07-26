@@ -1,5 +1,16 @@
 <template>
   <v-layout row wrap justify-center id="wrapper">
+    <v-navigation-drawer right clipped enable-resize-watcher fixed app v-model="rightDrawer">
+      <draggableList :data="aces" :update="sortUpdate" prename="ACE #" :clicked="picked"/>
+      <v-layout column align-center>
+        <v-tooltip top>
+          <v-btn slot="activator" :color="color" icon @click.stop="addAce()">
+            <v-icon>add</v-icon>
+          </v-btn>
+          Add
+        </v-tooltip>
+      </v-layout>
+    </v-navigation-drawer>
     <v-flex xs10 class="mt-4">
       <v-card>
         <v-layout row>
@@ -8,209 +19,212 @@
           <v-layout column align-end>
             <v-layout row align-center>
               <info :title="info.title" :content="info.content"/>
+              <v-btn flat icon @click.stop="rightDrawer = !rightDrawer">
+                <v-icon>menu</v-icon>
+              </v-btn>
             </v-layout>
           </v-layout>
         </v-layout>
         <v-divider></v-divider>
       </v-card>
-        <v-container grid-list-md>
-          <v-layout column v-for="(ace, index) in aces" :key="index">
-            <v-card>
+      <br>
+      <v-layout column v-for="(ace, index) in aces" :id="'ace' + index" :key="index">
+        <v-card>
+          <v-card-title class="headline">
+          ACE #{{index}} : {{ace.name}}
+          <v-spacer></v-spacer>
+          <v-tooltip top>
+            <v-btn slot="activator" :color="color" icon :disabled="index == 0" @click.stop="moveUpAce(index)">
+              <v-icon>keyboard_arrow_up</v-icon>
+            </v-btn>
+            Move Up
+          </v-tooltip>
+          <v-tooltip top>
+            <v-btn slot="activator" :color="color" icon :disabled="index >= aces.length - 1" @click.stop="moveDownAce(index)">
+              <v-icon>keyboard_arrow_down</v-icon>
+            </v-btn>
+            Move Down
+          </v-tooltip>
+          <v-tooltip top>
+            <v-btn slot="activator" :color="color" icon @click.stop="ace.visible = !ace.visible">
+              <v-icon> {{ace.visible? 'remove' : 'add'}}</v-icon>
+            </v-btn>
+            {{ace.visible? 'Hide' : 'Show'}}
+          </v-tooltip>
+          <v-tooltip top>
+            <v-btn slot="activator" :color="color" icon @click.stop="removeAce(index)">
+              <v-icon>clear</v-icon>
+            </v-btn>
+            Remove
+          </v-tooltip>
+          </v-card-title>
+          <v-flex v-if="ace.visible" v-for="(item, k) in acePage" :key="k">
+            <v-text-field v-if="item.type == 'text'"
+              :name="index"
+              :label="item.label"
+              id="id"
+              v-model="ace[item.bound]"
+            ></v-text-field>
+
+            <v-divider v-if="item.type == 'div'"></v-divider>
+            
+            <v-combobox v-if="item.type == 'combo'"
+              v-model="ace[item.bound]"
+              :name="index"
+              :items="item.items"
+              :label="item.label"
+              :multiple="item.multiple"
+            ></v-combobox>
+
+            <v-checkbox v-if="item.type == 'check'"
+              v-model="ace[item.bound]"
+              :label="item.label"
+            ></v-checkbox>
+
+            <v-card v-if="item.type == 'code'">
               <v-card-title class="headline">
-              ACE #{{index}} : {{ace.name}}
-              <v-spacer></v-spacer>
-              <v-tooltip top>
-                <v-btn slot="activator" :color="color" icon :disabled="index == 0" @click.stop="moveUpAce(index)">
-                  <v-icon>keyboard_arrow_up</v-icon>
-                </v-btn>
-                Move Up
-              </v-tooltip>
-              <v-tooltip top>
-                <v-btn slot="activator" :color="color" icon :disabled="index >= aces.length - 1" @click.stop="moveDownAce(index)">
-                  <v-icon>keyboard_arrow_down</v-icon>
-                </v-btn>
-                Move Down
-              </v-tooltip>
-              <v-tooltip top>
-                <v-btn slot="activator" :color="color" icon @click.stop="ace.visible = !ace.visible">
-                  <v-icon> {{ace.visible? 'remove' : 'add'}}</v-icon>
-                </v-btn>
-                {{ace.visible? 'Hide' : 'Show'}}
-              </v-tooltip>
-              <v-tooltip top>
-                <v-btn slot="activator" :color="color" icon @click.stop="removeAce(index)">
-                  <v-icon>clear</v-icon>
-                </v-btn>
-                Remove
-              </v-tooltip>
+                {{item.label}}
               </v-card-title>
-              <v-flex v-if="ace.visible" v-for="(item, k) in acePage" :key="k">
-                <v-text-field v-if="item.type == 'text'"
-                  :name="index"
-                  :label="item.label"
-                  id="id"
-                  v-model="ace[item.bound]"
-                ></v-text-field>
-
-                <v-divider v-if="item.type == 'div'"></v-divider>
-                
-                <v-combobox v-if="item.type == 'combo'"
-                  v-model="ace[item.bound]"
-                  :name="index"
-                  :items="item.items"
-                  :label="item.label"
-                  :multiple="item.multiple"
-                ></v-combobox>
-
-                <v-checkbox v-if="item.type == 'check'"
-                  v-model="ace[item.bound]"
-                  :label="item.label"
-                ></v-checkbox>
-
-                <v-card v-if="item.type == 'code'">
-                  <v-card-title class="headline">
-                    {{item.label}}
-                  </v-card-title>
-                  <codemirror v-model="ace[item.bound]"></codemirror>
-                </v-card>
-                
-                <v-container v-if="item.type == 'props'">
-                  <v-card>
-                      <v-card-title class="headline">
-                      Properties
-                      </v-card-title>
-                  </v-card>
-                  <v-flex v-for="(prop, j) in ace.props" :key="j">
-                    <v-card>
-                      <v-card-title class="headline">
-                      Property #{{j}} : {{prop.label}}
-                      <v-spacer></v-spacer>
-                      <v-tooltip top>
-                        <v-btn slot="activator" :color="color" icon :disabled="j == 0" @click.stop="moveUpProp(index, j)">
-                          <v-icon>keyboard_arrow_up</v-icon>
-                        </v-btn>
-                        Move Up
-                      </v-tooltip>
-                      <v-tooltip top>
-                        <v-btn slot="activator" :color="color" icon :disabled="j >= ace.props.length - 1" @click.stop="moveDownProp(index, j)">
-                          <v-icon>keyboard_arrow_down</v-icon>
-                        </v-btn>
-                        Move Down
-                      </v-tooltip>
-                      <v-tooltip top>
-                        <v-btn slot="activator" :color="color" icon @click.stop="prop.visible = !prop.visible">
-                          <v-icon> {{prop.visible? 'remove' : 'add'}}</v-icon>
-                        </v-btn>
-                        {{prop.visible? 'Hide' : 'Show'}}
-                      </v-tooltip>
-                      <v-tooltip top>
-                        <v-btn slot="activator" :color="color" icon @click.stop="removeProp(index, j)">
-                          <v-icon>clear</v-icon>
-                        </v-btn>
-                        Remove
-                      </v-tooltip>
-                      </v-card-title>
-                    </v-card>
-                    <v-card :color="color" v-if="prop.visible" >
-                      <v-flex v-for="(property, l) in propPage" :key="l">
-                        <v-text-field v-if="property.type == 'text' && checkPropAppearance(property.needsCombo, prop.isCombo)"
-                          :name="index"
-                          :label="property.label"
-                          id="id"
-                          v-model="prop[property.bound]"
-                        ></v-text-field>
-
-                        <v-divider v-if="property.type == 'div' && checkPropAppearance(property.needsCombo, prop.isCombo)"></v-divider>
-                        
-                        <v-combobox v-if="property.type == 'combo' && checkPropAppearance(property.needsCombo, prop.isCombo)"
-                          v-model="prop[property.bound]"
-                          :name="index"
-                          :items="property.items"
-                          :label="property.label"
-                          :multiple="property.multiple"
-                        ></v-combobox>
-
-                        <v-checkbox v-if="property.type == 'check' && checkPropAppearance(property.needsCombo, prop.isCombo)"
-                          v-model="prop[property.bound]"
-                          :label="property.label"
-                        ></v-checkbox>
-
-                        <v-container v-if="property.type == 'comboParams' && checkPropAppearance(property.needsCombo, prop.isCombo)">
-                          <v-card>
-                            <v-card-title class="headline">
-                            Combo Params
-                            </v-card-title>
-                          </v-card>
-                          <v-flex v-for="(comboParam, comboIndex) in prop.comboParams" :key="comboIndex">
-                            <v-card>
-                              <v-card-title class="headline">
-                              Combo Param #{{comboIndex}} : {{comboParam.text}}
-                              <v-spacer></v-spacer>
-                              <v-tooltip top>
-                                <v-btn slot="activator" :color="color2" icon :disabled="comboIndex == 0" @click.stop="moveUpCombo(index, j, comboIndex)">
-                                  <v-icon>keyboard_arrow_up</v-icon>
-                                </v-btn>
-                                Move Up
-                              </v-tooltip>
-                              <v-tooltip top>
-                                <v-btn slot="activator" :color="color2" icon :disabled="comboIndex >= prop.comboParams.length - 1" @click.stop="moveDownCombo(index, j, comboIndex)">
-                                  <v-icon>keyboard_arrow_down</v-icon>
-                                </v-btn>
-                                Move Down
-                              </v-tooltip>
-                              <v-tooltip top>
-                                <v-btn slot="activator" :color="color2" icon @click.stop="comboParam.visible = !comboParam.visible">
-                                  <v-icon> {{comboParam.visible? 'remove' : 'add'}}</v-icon>
-                                </v-btn>
-                                {{comboParam.visible? 'Hide' : 'Show'}}
-                              </v-tooltip>
-                              <v-tooltip top>
-                                <v-btn slot="activator" :color="color2" icon @click.stop="removeCombo(index, j, comboIndex)">
-                                  <v-icon>clear</v-icon>
-                                </v-btn>
-                                Remove
-                              </v-tooltip>
-                              </v-card-title>
-                            </v-card>
-                            <v-card v-if="comboParam.visible">
-                              <v-flex v-for="(param, paramIndex) in comboPage" :key="paramIndex">
-                                <v-text-field v-if="param.type == 'text'"
-                                  :name="j"
-                                  :label="param.label"
-                                  id="id"
-                                  v-model="comboParam[param.bound]"
-                                ></v-text-field>
-                              </v-flex>
-                            </v-card>
-                          </v-flex>
-                          <v-layout column align-center>
-                            <v-tooltip top>
-                              <v-btn slot="activator" :color="color2" icon @click.stop="addCombo(index, j)">
-                                <v-icon>add</v-icon>
-                              </v-btn>
-                              Add
-                            </v-tooltip>
-                          </v-layout>
-                        </v-container>
-                      </v-flex>
-                    </v-card>
-                  </v-flex>
-                  <v-layout column align-center>
-                    <v-tooltip top>
-                      <v-btn slot="activator" :color="color" icon @click.stop="addProp(index)">
-                        <v-icon>add</v-icon>
-                      </v-btn>
-                      Add
-                    </v-tooltip>
-                  </v-layout>
-                </v-container>
-              </v-flex>
-              
-              <v-divider v-if="index < aces.length - 1"></v-divider>
+              <codemirror v-model="ace[item.bound]"></codemirror>
             </v-card>
-            <br  v-if="index < aces.length - 1">
-          </v-layout>
-        </v-container>
+            
+            <v-container v-if="item.type == 'props'">
+              <v-card>
+                  <v-card-title class="headline">
+                  Properties
+                  </v-card-title>
+              </v-card>
+              <v-flex v-for="(prop, j) in ace.props" :key="j">
+                <v-card>
+                  <v-card-title class="headline">
+                  Property #{{j}} : {{prop.label}}
+                  <v-spacer></v-spacer>
+                  <v-tooltip top>
+                    <v-btn slot="activator" :color="color" icon :disabled="j == 0" @click.stop="moveUpProp(index, j)">
+                      <v-icon>keyboard_arrow_up</v-icon>
+                    </v-btn>
+                    Move Up
+                  </v-tooltip>
+                  <v-tooltip top>
+                    <v-btn slot="activator" :color="color" icon :disabled="j >= ace.props.length - 1" @click.stop="moveDownProp(index, j)">
+                      <v-icon>keyboard_arrow_down</v-icon>
+                    </v-btn>
+                    Move Down
+                  </v-tooltip>
+                  <v-tooltip top>
+                    <v-btn slot="activator" :color="color" icon @click.stop="prop.visible = !prop.visible">
+                      <v-icon> {{prop.visible? 'remove' : 'add'}}</v-icon>
+                    </v-btn>
+                    {{prop.visible? 'Hide' : 'Show'}}
+                  </v-tooltip>
+                  <v-tooltip top>
+                    <v-btn slot="activator" :color="color" icon @click.stop="removeProp(index, j)">
+                      <v-icon>clear</v-icon>
+                    </v-btn>
+                    Remove
+                  </v-tooltip>
+                  </v-card-title>
+                </v-card>
+                <v-card :color="color" v-if="prop.visible" >
+                  <v-flex v-for="(property, l) in propPage" :key="l">
+                    <v-text-field v-if="property.type == 'text' && checkPropAppearance(property.needsCombo, prop.isCombo)"
+                      :name="index"
+                      :label="property.label"
+                      id="id"
+                      v-model="prop[property.bound]"
+                    ></v-text-field>
+
+                    <v-divider v-if="property.type == 'div' && checkPropAppearance(property.needsCombo, prop.isCombo)"></v-divider>
+                    
+                    <v-combobox v-if="property.type == 'combo' && checkPropAppearance(property.needsCombo, prop.isCombo)"
+                      v-model="prop[property.bound]"
+                      :name="index"
+                      :items="property.items"
+                      :label="property.label"
+                      :multiple="property.multiple"
+                    ></v-combobox>
+
+                    <v-checkbox v-if="property.type == 'check' && checkPropAppearance(property.needsCombo, prop.isCombo)"
+                      v-model="prop[property.bound]"
+                      :label="property.label"
+                    ></v-checkbox>
+
+                    <v-container v-if="property.type == 'comboParams' && checkPropAppearance(property.needsCombo, prop.isCombo)">
+                      <v-card>
+                        <v-card-title class="headline">
+                        Combo Params
+                        </v-card-title>
+                      </v-card>
+                      <v-flex v-for="(comboParam, comboIndex) in prop.comboParams" :key="comboIndex">
+                        <v-card>
+                          <v-card-title class="headline">
+                          Combo Param #{{comboIndex}} : {{comboParam.text}}
+                          <v-spacer></v-spacer>
+                          <v-tooltip top>
+                            <v-btn slot="activator" :color="color2" icon :disabled="comboIndex == 0" @click.stop="moveUpCombo(index, j, comboIndex)">
+                              <v-icon>keyboard_arrow_up</v-icon>
+                            </v-btn>
+                            Move Up
+                          </v-tooltip>
+                          <v-tooltip top>
+                            <v-btn slot="activator" :color="color2" icon :disabled="comboIndex >= prop.comboParams.length - 1" @click.stop="moveDownCombo(index, j, comboIndex)">
+                              <v-icon>keyboard_arrow_down</v-icon>
+                            </v-btn>
+                            Move Down
+                          </v-tooltip>
+                          <v-tooltip top>
+                            <v-btn slot="activator" :color="color2" icon @click.stop="comboParam.visible = !comboParam.visible">
+                              <v-icon> {{comboParam.visible? 'remove' : 'add'}}</v-icon>
+                            </v-btn>
+                            {{comboParam.visible? 'Hide' : 'Show'}}
+                          </v-tooltip>
+                          <v-tooltip top>
+                            <v-btn slot="activator" :color="color2" icon @click.stop="removeCombo(index, j, comboIndex)">
+                              <v-icon>clear</v-icon>
+                            </v-btn>
+                            Remove
+                          </v-tooltip>
+                          </v-card-title>
+                        </v-card>
+                        <v-card v-if="comboParam.visible">
+                          <v-flex v-for="(param, paramIndex) in comboPage" :key="paramIndex">
+                            <v-text-field v-if="param.type == 'text'"
+                              :name="j"
+                              :label="param.label"
+                              id="id"
+                              v-model="comboParam[param.bound]"
+                            ></v-text-field>
+                          </v-flex>
+                        </v-card>
+                      </v-flex>
+                      <v-layout column align-center>
+                        <v-tooltip top>
+                          <v-btn slot="activator" :color="color2" icon @click.stop="addCombo(index, j)">
+                            <v-icon>add</v-icon>
+                          </v-btn>
+                          Add
+                        </v-tooltip>
+                      </v-layout>
+                    </v-container>
+                  </v-flex>
+                </v-card>
+              </v-flex>
+              <v-layout column align-center>
+                <v-tooltip top>
+                  <v-btn slot="activator" :color="color" icon @click.stop="addProp(index)">
+                    <v-icon>add</v-icon>
+                  </v-btn>
+                  Add
+                </v-tooltip>
+              </v-layout>
+            </v-container>
+          </v-flex>
+          
+          <v-divider v-if="index < aces.length - 1"></v-divider>
+        </v-card>
+        <br  v-if="index < aces.length - 1">
+      </v-layout>
+      <br>
       <v-card>
         <v-divider></v-divider>
         <v-layout column align-center>
@@ -228,11 +242,13 @@
 
 <script>
 import info from './Misc/Info'
+import draggableList from './Misc/DraggableList'
 export default {
   name: 'PluginAces',
-  components: {info},
+  components: {info, draggableList},
   data () {
     return {
+      rightDrawer: false,
       acePage: [
         {
           type: 'combo',
@@ -468,6 +484,17 @@ export default {
     if (localStorage.aces) {
       this.aces = JSON.parse(localStorage.aces)
     }
+    setTimeout(() => {
+      this.rightDrawer = true
+    }, 700)
+  },
+  beforeRouteLeave (to, from, next) {
+    if (this.rightDrawer) {
+      this.rightDrawer = false
+      setTimeout(next, 300)
+    } else {
+      next()
+    }
   },
   methods: {
     addAce () {
@@ -543,6 +570,15 @@ export default {
       if (needsCombo === 2) {
         return isCombo
       }
+    },
+    sortUpdate (data) {
+      this.aces = data
+    },
+    picked (index) {
+      this.aces[index].visible = true
+      setTimeout(() => {
+        this.$vuetify.goTo('#ace' + index, {duration: 500, offset: -100, easing: 'easeInOutCubic'})
+      }, 10)
     }
   }
 }

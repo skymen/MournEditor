@@ -1,94 +1,108 @@
 <template>
-  <v-layout row wrap justify-center id="wrapper">
-    <v-navigation-drawer>
-      <draggableList :data="properties" :update="sortUpdate"/>
-    </v-navigation-drawer>
-    <v-flex xs10 class="mt-4">
-      <v-card>
-        <v-layout row>
-          <v-card-title class="headline">Plugin Properties</v-card-title>
-          <v-spacer></v-spacer>
-          <v-layout column align-end>
-            <v-layout row align-center>
-              <info :title="info.title" :content="info.content"/>
-            </v-layout>
-          </v-layout>
-        </v-layout>
-        <v-divider></v-divider>
-      </v-card>
-        <v-container grid-list-md>
-          <v-layout column v-for="(property, index) in properties" :key="index">
-            <v-card>
-              <v-card-title class="headline">
-                Property #{{index}} : {{property.name}}
-                <v-spacer></v-spacer>
-                <v-tooltip top>
-                  <v-btn slot="activator" :color="color" icon :disabled="index == 0" @click.stop="moveUp(index)">
-                    <v-icon>keyboard_arrow_up</v-icon>
-                  </v-btn>
-                  Move Up
-                </v-tooltip>
-                <v-tooltip top>
-                  <v-btn slot="activator" :color="color" icon :disabled="index >= properties.length - 1" @click.stop="moveDown(index)">
-                    <v-icon>keyboard_arrow_down</v-icon>
-                  </v-btn>
-                  Move Down
-                </v-tooltip>
-                <v-tooltip top>
-                  <v-btn slot="activator" :color="color" icon @click.stop="property.visible = !property.visible">
-                    <v-icon> {{property.visible? 'remove' : 'add'}}</v-icon>
-                  </v-btn>
-                  {{property.visible? 'Hide' : 'Show'}}
-                </v-tooltip>
-                <v-tooltip top>
-                  <v-btn slot="activator" :color="color" icon @click.stop="remove(index)">
-                    <v-icon>clear</v-icon>
-                  </v-btn>
-                  Remove
-                </v-tooltip>
-                </v-card-title>
-              <v-flex v-if="property.visible" v-for="(item, k) in propPage" :key="k">
-                <v-text-field v-if="item.type == 'text'"
-                  :name="index"
-                  :label="item.label"
-                  id="id"
-                  v-model="property[item.bound]"
-                ></v-text-field>
+<v-layout row wrap justify-center id="wrapper">
+  <v-navigation-drawer right clipped enable-resize-watcher fixed app v-model="rightDrawer">
+    <draggableList :data="properties" :update="sortUpdate" prename="Property #" :clicked="picked"/>
+    <v-layout column align-center>
+      <v-tooltip top>
+        <v-btn slot="activator" :color="color" icon @click.stop="add()">
+          <v-icon>add</v-icon>
+        </v-btn>
+        Add
+      </v-tooltip>
+    </v-layout>
+  </v-navigation-drawer>
 
-                <v-divider v-if="item.type == 'div'"></v-divider>
-                
-                <v-combobox v-if="item.type == 'combo'"
-                  v-model="property[item.bound]"
-                  :name="index"
-                  :items="item.items"
-                  :label="item.label"
-                  :multiple="item.multiple"
-                ></v-combobox>
-
-                <v-checkbox v-if="item.type == 'check'"
-                  v-model="property[item.bound]"
-                  :label="item.label"
-                ></v-checkbox>
-              </v-flex>
-              
-              <v-divider v-if="index < properties.length - 1"></v-divider>
-            </v-card>
-            <br  v-if="index < properties.length - 1">
-          </v-layout>
-        </v-container>
-      <v-card>
-        <v-divider></v-divider>
-        <v-layout column align-center>
-          <v-tooltip top>
-            <v-btn slot="activator" :color="color" icon @click.stop="add()">
-              <v-icon>add</v-icon>
+  <v-flex xs11 class="mt-4">
+    
+    <v-card>
+      <v-layout row>
+        <v-card-title class="headline">Plugin Properties</v-card-title>
+        <v-spacer></v-spacer>
+        <v-layout column align-end>
+          <v-layout row align-center>
+            <info :title="info.title" :content="info.content"/>
+            <v-btn flat icon @click.stop="rightDrawer = !rightDrawer">
+              <v-icon>menu</v-icon>
             </v-btn>
-            Add
-          </v-tooltip>
+          </v-layout>
         </v-layout>
+      </v-layout>
+      <v-divider></v-divider>
+    </v-card>
+    <br>
+    <v-layout column justify-center v-for="(property, index) in properties" :id="'prop' + index" :key="index">
+      <v-card>
+        <v-card-title class="headline">
+          Property #{{index}} : {{property.name}}
+          <v-spacer></v-spacer>
+          <v-tooltip top>
+            <v-btn slot="activator" :color="color" icon :disabled="index == 0" @click.stop="moveUp(index)">
+              <v-icon>keyboard_arrow_up</v-icon>
+            </v-btn>
+            Move Up
+          </v-tooltip>
+          <v-tooltip top>
+            <v-btn slot="activator" :color="color" icon :disabled="index >= properties.length - 1" @click.stop="moveDown(index)">
+              <v-icon>keyboard_arrow_down</v-icon>
+            </v-btn>
+            Move Down
+          </v-tooltip>
+          <v-tooltip top>
+            <v-btn slot="activator" :color="color" icon @click.stop="property.visible = !property.visible">
+              <v-icon> {{property.visible? 'remove' : 'add'}}</v-icon>
+            </v-btn>
+            {{property.visible? 'Hide' : 'Show'}}
+          </v-tooltip>
+          <v-tooltip top>
+            <v-btn slot="activator" :color="color" icon @click.stop="remove(index)">
+              <v-icon>clear</v-icon>
+            </v-btn>
+            Remove
+          </v-tooltip>
+          </v-card-title>
+        <v-flex v-if="property.visible" v-for="(item, k) in propPage" :key="k">
+          <v-text-field v-if="item.type == 'text'"
+            :name="index"
+            :label="item.label"
+            id="id"
+            v-model="property[item.bound]"
+          ></v-text-field>
+
+          <v-divider v-if="item.type == 'div'"></v-divider>
+          
+          <v-combobox v-if="item.type == 'combo'"
+            v-model="property[item.bound]"
+            :name="index"
+            :items="item.items"
+            :label="item.label"
+            :multiple="item.multiple"
+          ></v-combobox>
+
+          <v-checkbox v-if="item.type == 'check'"
+            v-model="property[item.bound]"
+            :label="item.label"
+          ></v-checkbox>
+        </v-flex>
+        
+        <v-divider v-if="index < properties.length - 1"></v-divider>
       </v-card>
-    </v-flex>
-  </v-layout>
+      <br  v-if="index < properties.length - 1">
+    </v-layout>
+    <br>
+    <v-card>
+      <v-divider></v-divider>
+      <v-layout column align-center>
+        <v-tooltip top>
+          <v-btn slot="activator" :color="color" icon @click.stop="add()">
+            <v-icon>add</v-icon>
+          </v-btn>
+          Add
+        </v-tooltip>
+      </v-layout>
+    </v-card>
+  </v-flex>
+</v-layout>
+  
 </template>
 
 <script>
@@ -99,6 +113,7 @@ export default {
   components: {info, draggableList},
   data () {
     return {
+      rightDrawer: false,
       propPage: [
         {
           type: 'text',
@@ -172,6 +187,17 @@ export default {
     if (localStorage.properties) {
       this.properties = JSON.parse(localStorage.properties)
     }
+    setTimeout(() => {
+      this.rightDrawer = true
+    }, 700)
+  },
+  beforeRouteLeave (to, from, next) {
+    if (this.rightDrawer) {
+      this.rightDrawer = false
+      setTimeout(next, 300)
+    } else {
+      next()
+    }
   },
   methods: {
     add () {
@@ -197,6 +223,12 @@ export default {
     },
     sortUpdate (data) {
       this.properties = data
+    },
+    picked (index) {
+      this.properties[index].visible = true
+      setTimeout(() => {
+        this.$vuetify.goTo('#prop' + index, {duration: 500, offset: -100, easing: 'easeInOutCubic'})
+      }, 10)
     }
   }
 }
