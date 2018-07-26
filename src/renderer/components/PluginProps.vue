@@ -1,5 +1,8 @@
 <template>
   <v-layout row wrap justify-center id="wrapper">
+    <v-navigation-drawer>
+      <draggableList :data="properties" :update="sortUpdate"/>
+    </v-navigation-drawer>
     <v-flex xs10 class="mt-4">
       <v-card>
         <v-layout row>
@@ -90,9 +93,10 @@
 
 <script>
 import info from './Misc/Info'
+import draggableList from './Misc/DraggableList'
 export default {
   name: 'PluginProps',
-  components: {info},
+  components: {info, draggableList},
   data () {
     return {
       propPage: [
@@ -190,6 +194,9 @@ export default {
     },
     remove (index) {
       this.properties.splice(index, 1)
+    },
+    sortUpdate (data) {
+      this.properties = data
     }
   }
 }
