@@ -30,64 +30,62 @@
       <v-divider></v-divider>
     </v-card>
     <br>
-    <v-layout column justify-center v-for="(property, index) in properties" :id="'prop' + index" :key="index">
-      <v-card>
-        <v-card-title class="headline">
+    <v-expansion-panel popout :value="expandIndex">
+      <v-expansion-panel-content v-for="(property, index) in properties" :id="'prop' + index" :key="index">
+        <div slot="header">
+          <v-card-title class="headline">
           Property #{{index}} : {{property.name}}
           <v-spacer></v-spacer>
           <v-tooltip top>
-            <v-btn slot="activator" :color="color" icon :disabled="index == 0" @click.stop="moveUp(index)">
+            <v-btn slot="activator" icon :disabled="index == 0" @click.stop="moveUp(index)">
               <v-icon>keyboard_arrow_up</v-icon>
             </v-btn>
             Move Up
           </v-tooltip>
           <v-tooltip top>
-            <v-btn slot="activator" :color="color" icon :disabled="index >= properties.length - 1" @click.stop="moveDown(index)">
+            <v-btn slot="activator" icon :disabled="index >= properties.length - 1" @click.stop="moveDown(index)">
               <v-icon>keyboard_arrow_down</v-icon>
             </v-btn>
             Move Down
           </v-tooltip>
           <v-tooltip top>
-            <v-btn slot="activator" :color="color" icon @click.stop="property.visible = !property.visible">
-              <v-icon> {{property.visible? 'remove' : 'add'}}</v-icon>
-            </v-btn>
-            {{property.visible? 'Hide' : 'Show'}}
-          </v-tooltip>
-          <v-tooltip top>
-            <v-btn slot="activator" :color="color" icon @click.stop="remove(index)">
+            <v-btn slot="activator" icon @click.stop="remove(index)">
               <v-icon>clear</v-icon>
             </v-btn>
             Remove
           </v-tooltip>
           </v-card-title>
-        <v-flex v-if="property.visible" v-for="(item, k) in propPage" :key="k">
-          <v-text-field v-if="item.type == 'text'"
-            :name="index"
-            :label="item.label"
-            id="id"
-            v-model="property[item.bound]"
-          ></v-text-field>
+        </div>
+        <v-layout column justify-center>
+          <v-card>
+            <v-flex xs10 offset-xs1 v-for="(item, k) in propPage" :key="k">
+              <v-text-field v-if="item.type == 'text'"
+                :name="index"
+                :label="item.label"
+                id="id"
+                v-model="property[item.bound]"
+              ></v-text-field>
 
-          <v-divider v-if="item.type == 'div'"></v-divider>
-          
-          <v-combobox v-if="item.type == 'combo'"
-            v-model="property[item.bound]"
-            :name="index"
-            :items="item.items"
-            :label="item.label"
-            :multiple="item.multiple"
-          ></v-combobox>
+              <v-divider v-if="item.type == 'div'"></v-divider>
+              
+              <v-combobox v-if="item.type == 'combo'"
+                v-model="property[item.bound]"
+                :name="index"
+                :items="item.items"
+                :label="item.label"
+                :multiple="item.multiple"
+              ></v-combobox>
 
-          <v-checkbox v-if="item.type == 'check'"
-            v-model="property[item.bound]"
-            :label="item.label"
-          ></v-checkbox>
-        </v-flex>
-        
-        <v-divider v-if="index < properties.length - 1"></v-divider>
-      </v-card>
-      <br  v-if="index < properties.length - 1">
-    </v-layout>
+              <v-checkbox v-if="item.type == 'check'"
+                v-model="property[item.bound]"
+                :label="item.label"
+              ></v-checkbox>
+            </v-flex>
+          </v-card>
+        </v-layout>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+    
     <br>
     <v-card>
       <v-divider></v-divider>
@@ -163,10 +161,12 @@ export default {
         typeC3: '',
         idC3: ''
       },
+      justUpdated: false,
       info: {
         title: 'Test',
         content: ['Test']
-      }
+      },
+      expandIndex: 0
     }
   },
   computed: {
@@ -203,6 +203,12 @@ export default {
     add () {
       var toAdd = JSON.parse(JSON.stringify(this.defaultProp))
       this.properties.push(toAdd)
+      setTimeout(() => {
+        this.expandIndex = this.properties.length - 1
+        setTimeout(() => {
+          this.$vuetify.goTo('#prop' + this.expandIndex, {duration: 500, offset: -100, easing: 'easeInOutCubic'})
+        }, 400)
+      }, 100)
     },
     moveUp (index) {
       var temp = this.properties[index - 1]
@@ -210,6 +216,7 @@ export default {
       this.properties[index] = temp
       this.properties.push({})
       this.properties.splice(this.properties.length - 1, 1)
+      this.expandIndex -= this.expandIndex === index
     },
     moveDown (index) {
       var temp = this.properties[index + 1]
@@ -217,18 +224,20 @@ export default {
       this.properties[index] = temp
       this.properties.push({})
       this.properties.splice(this.properties.length - 1, 1)
+      this.expandIndex += this.expandIndex === index
     },
     remove (index) {
       this.properties.splice(index, 1)
+      this.expandIndex -= this.expandIndex === this.properties.length
     },
     sortUpdate (data) {
       this.properties = data
     },
     picked (index) {
-      this.properties[index].visible = true
       setTimeout(() => {
         this.$vuetify.goTo('#prop' + index, {duration: 500, offset: -100, easing: 'easeInOutCubic'})
-      }, 10)
+      }, 400 * (this.expandIndex !== index))
+      this.expandIndex = index
     }
   }
 }

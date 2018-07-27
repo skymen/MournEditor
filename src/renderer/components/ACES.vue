@@ -28,202 +28,207 @@
         <v-divider></v-divider>
       </v-card>
       <br>
-      <v-layout column v-for="(ace, index) in aces" :id="'ace' + index" :key="index">
-        <v-card>
-          <v-card-title class="headline">
-          ACE #{{index}} : {{ace.name}}
-          <v-spacer></v-spacer>
-          <v-tooltip top>
-            <v-btn slot="activator" :color="color" icon :disabled="index == 0" @click.stop="moveUpAce(index)">
-              <v-icon>keyboard_arrow_up</v-icon>
-            </v-btn>
-            Move Up
-          </v-tooltip>
-          <v-tooltip top>
-            <v-btn slot="activator" :color="color" icon :disabled="index >= aces.length - 1" @click.stop="moveDownAce(index)">
-              <v-icon>keyboard_arrow_down</v-icon>
-            </v-btn>
-            Move Down
-          </v-tooltip>
-          <v-tooltip top>
-            <v-btn slot="activator" :color="color" icon @click.stop="ace.visible = !ace.visible">
-              <v-icon> {{ace.visible? 'remove' : 'add'}}</v-icon>
-            </v-btn>
-            {{ace.visible? 'Hide' : 'Show'}}
-          </v-tooltip>
-          <v-tooltip top>
-            <v-btn slot="activator" :color="color" icon @click.stop="removeAce(index)">
-              <v-icon>clear</v-icon>
-            </v-btn>
-            Remove
-          </v-tooltip>
-          </v-card-title>
-          <v-flex v-if="ace.visible" v-for="(item, k) in acePage" :key="k">
-            <v-text-field v-if="item.type == 'text'"
-              :name="index"
-              :label="item.label"
-              id="id"
-              v-model="ace[item.bound]"
-            ></v-text-field>
+      <v-expansion-panel popout :value="expandIndex">
+        <v-expansion-panel-content lazy v-for="(ace, index) in aces" :id="'ace' + index" :key="index">
+          <div slot="header">
+            <v-card-title class="headline">
+              ACE #{{index}} : {{ace.name}}
+              <v-spacer></v-spacer>
+              <v-tooltip top>
+                <v-btn slot="activator" icon :disabled="index == 0" @click.stop="moveUpAce(index)">
+                  <v-icon>keyboard_arrow_up</v-icon>
+                </v-btn>
+                Move Up
+              </v-tooltip>
+              <v-tooltip top>
+                <v-btn slot="activator" icon :disabled="index >= aces.length - 1" @click.stop="moveDownAce(index)">
+                  <v-icon>keyboard_arrow_down</v-icon>
+                </v-btn>
+                Move Down
+              </v-tooltip>
+              <v-tooltip top>
+                <v-btn slot="activator" icon @click.stop="removeAce(index)">
+                  <v-icon>clear</v-icon>
+                </v-btn>
+                Remove
+              </v-tooltip>
+            </v-card-title>
+          </div>
+          <v-layout column>
+            <v-card>
+              <v-flex v-for="(item, k) in acePage" :key="k">
+                <v-text-field v-if="item.type == 'text'"
+                  :name="index"
+                  :label="item.label"
+                  id="id"
+                  v-model="ace[item.bound]"
+                ></v-text-field>
 
-            <v-divider v-if="item.type == 'div'"></v-divider>
-            
-            <v-combobox v-if="item.type == 'combo'"
-              v-model="ace[item.bound]"
-              :name="index"
-              :items="item.items"
-              :label="item.label"
-              :multiple="item.multiple"
-            ></v-combobox>
+                <v-divider v-if="item.type == 'div'"></v-divider>
+                
+                <v-combobox v-if="item.type == 'combo'"
+                  v-model="ace[item.bound]"
+                  :name="index"
+                  :items="item.items"
+                  :label="item.label"
+                  :multiple="item.multiple"
+                ></v-combobox>
 
-            <v-checkbox v-if="item.type == 'check'"
-              v-model="ace[item.bound]"
-              :label="item.label"
-            ></v-checkbox>
+                <v-checkbox v-if="item.type == 'check'"
+                  v-model="ace[item.bound]"
+                  :label="item.label"
+                ></v-checkbox>
 
-            <v-card v-if="item.type == 'code'">
-              <v-card-title class="headline">
-                {{item.label}}
-              </v-card-title>
-              <codemirror v-model="ace[item.bound]"></codemirror>
-            </v-card>
-            
-            <v-container v-if="item.type == 'props'">
-              <v-card>
+                <v-card v-if="item.type == 'code'">
                   <v-card-title class="headline">
-                  Properties
+                    {{item.label}}
                   </v-card-title>
-              </v-card>
-              <v-flex v-for="(prop, j) in ace.props" :key="j">
-                <v-card>
-                  <v-card-title class="headline">
-                  Property #{{j}} : {{prop.label}}
-                  <v-spacer></v-spacer>
-                  <v-tooltip top>
-                    <v-btn slot="activator" :color="color" icon :disabled="j == 0" @click.stop="moveUpProp(index, j)">
-                      <v-icon>keyboard_arrow_up</v-icon>
-                    </v-btn>
-                    Move Up
-                  </v-tooltip>
-                  <v-tooltip top>
-                    <v-btn slot="activator" :color="color" icon :disabled="j >= ace.props.length - 1" @click.stop="moveDownProp(index, j)">
-                      <v-icon>keyboard_arrow_down</v-icon>
-                    </v-btn>
-                    Move Down
-                  </v-tooltip>
-                  <v-tooltip top>
-                    <v-btn slot="activator" :color="color" icon @click.stop="prop.visible = !prop.visible">
-                      <v-icon> {{prop.visible? 'remove' : 'add'}}</v-icon>
-                    </v-btn>
-                    {{prop.visible? 'Hide' : 'Show'}}
-                  </v-tooltip>
-                  <v-tooltip top>
-                    <v-btn slot="activator" :color="color" icon @click.stop="removeProp(index, j)">
-                      <v-icon>clear</v-icon>
-                    </v-btn>
-                    Remove
-                  </v-tooltip>
-                  </v-card-title>
+                  <codemirror v-model="ace[item.bound]"></codemirror>
                 </v-card>
-                <v-card :color="color" v-if="prop.visible" >
-                  <v-flex v-for="(property, l) in propPage" :key="l">
-                    <v-text-field v-if="property.type == 'text' && checkPropAppearance(property.needsCombo, prop.isCombo)"
-                      :name="index"
-                      :label="property.label"
-                      id="id"
-                      v-model="prop[property.bound]"
-                    ></v-text-field>
-
-                    <v-divider v-if="property.type == 'div' && checkPropAppearance(property.needsCombo, prop.isCombo)"></v-divider>
-                    
-                    <v-combobox v-if="property.type == 'combo' && checkPropAppearance(property.needsCombo, prop.isCombo)"
-                      v-model="prop[property.bound]"
-                      :name="index"
-                      :items="property.items"
-                      :label="property.label"
-                      :multiple="property.multiple"
-                    ></v-combobox>
-
-                    <v-checkbox v-if="property.type == 'check' && checkPropAppearance(property.needsCombo, prop.isCombo)"
-                      v-model="prop[property.bound]"
-                      :label="property.label"
-                    ></v-checkbox>
-
-                    <v-container v-if="property.type == 'comboParams' && checkPropAppearance(property.needsCombo, prop.isCombo)">
-                      <v-card>
+                
+                <v-container v-if="item.type == 'props'">
+                  <v-expansion-panel>
+                    <v-expansion-panel-content lazy>
+                      <div slot="header">
                         <v-card-title class="headline">
-                        Combo Params
+                        Properties
                         </v-card-title>
-                      </v-card>
-                      <v-flex v-for="(comboParam, comboIndex) in prop.comboParams" :key="comboIndex">
-                        <v-card>
-                          <v-card-title class="headline">
-                          Combo Param #{{comboIndex}} : {{comboParam.text}}
-                          <v-spacer></v-spacer>
-                          <v-tooltip top>
-                            <v-btn slot="activator" :color="color2" icon :disabled="comboIndex == 0" @click.stop="moveUpCombo(index, j, comboIndex)">
-                              <v-icon>keyboard_arrow_up</v-icon>
-                            </v-btn>
-                            Move Up
-                          </v-tooltip>
-                          <v-tooltip top>
-                            <v-btn slot="activator" :color="color2" icon :disabled="comboIndex >= prop.comboParams.length - 1" @click.stop="moveDownCombo(index, j, comboIndex)">
-                              <v-icon>keyboard_arrow_down</v-icon>
-                            </v-btn>
-                            Move Down
-                          </v-tooltip>
-                          <v-tooltip top>
-                            <v-btn slot="activator" :color="color2" icon @click.stop="comboParam.visible = !comboParam.visible">
-                              <v-icon> {{comboParam.visible? 'remove' : 'add'}}</v-icon>
-                            </v-btn>
-                            {{comboParam.visible? 'Hide' : 'Show'}}
-                          </v-tooltip>
-                          <v-tooltip top>
-                            <v-btn slot="activator" :color="color2" icon @click.stop="removeCombo(index, j, comboIndex)">
-                              <v-icon>clear</v-icon>
-                            </v-btn>
-                            Remove
-                          </v-tooltip>
-                          </v-card-title>
-                        </v-card>
-                        <v-card v-if="comboParam.visible">
-                          <v-flex v-for="(param, paramIndex) in comboPage" :key="paramIndex">
-                            <v-text-field v-if="param.type == 'text'"
-                              :name="j"
-                              :label="param.label"
-                              id="id"
-                              v-model="comboParam[param.bound]"
-                            ></v-text-field>
-                          </v-flex>
-                        </v-card>
-                      </v-flex>
+                      </div>
+                      <br>
+                      <v-divider></v-divider>
+                      <v-expansion-panel popout :value="ace.expandIndex">
+                        <v-expansion-panel-content lazy v-for="(prop, j) in ace.props" :key="j">
+                          <div slot="header">
+                            <v-card-title class="headline">
+                              Property #{{j}} : {{prop.label}}
+                              <v-spacer></v-spacer>
+                              <v-tooltip top>
+                                <v-btn slot="activator" icon :disabled="j == 0" @click.stop="moveUpProp(index, j)">
+                                  <v-icon>keyboard_arrow_up</v-icon>
+                                </v-btn>
+                                Move Up
+                              </v-tooltip>
+                              <v-tooltip top>
+                                <v-btn slot="activator" icon :disabled="j >= ace.props.length - 1" @click.stop="moveDownProp(index, j)">
+                                  <v-icon>keyboard_arrow_down</v-icon>
+                                </v-btn>
+                                Move Down
+                              </v-tooltip>
+                              <v-tooltip top>
+                                <v-btn slot="activator" icon @click.stop="removeProp(index, j)">
+                                  <v-icon>clear</v-icon>
+                                </v-btn>
+                                Remove
+                              </v-tooltip>
+                            </v-card-title>
+                          </div>
+                          <v-card :color="color">
+                            <v-flex v-for="(property, l) in propPage" :key="l">
+                              <v-text-field v-if="property.type == 'text' && checkPropAppearance(property.needsCombo, prop.isCombo)"
+                                :name="index"
+                                :label="property.label"
+                                id="id"
+                                v-model="prop[property.bound]"
+                              ></v-text-field>
+
+                              <v-divider v-if="property.type == 'div' && checkPropAppearance(property.needsCombo, prop.isCombo)"></v-divider>
+                              
+                              <v-combobox v-if="property.type == 'combo' && checkPropAppearance(property.needsCombo, prop.isCombo)"
+                                v-model="prop[property.bound]"
+                                :name="index"
+                                :items="property.items"
+                                :label="property.label"
+                                :multiple="property.multiple"
+                              ></v-combobox>
+
+                              <v-checkbox v-if="property.type == 'check' && checkPropAppearance(property.needsCombo, prop.isCombo)"
+                                v-model="prop[property.bound]"
+                                :label="property.label"
+                              ></v-checkbox>
+
+                              <v-container v-if="property.type == 'comboParams' && checkPropAppearance(property.needsCombo, prop.isCombo)">
+                                <v-expansion-panel>
+                                  <v-expansion-panel-content lazy>
+                                    <div slot="header">
+                                      <v-card-title class="headline">
+                                      Combo Params
+                                      </v-card-title>
+                                    </div>
+                                    <br>
+                                    <v-divider></v-divider>
+                                    <v-expansion-panel popout :value="prop.expandIndex">
+                                      <v-expansion-panel-content lazy v-for="(comboParam, comboIndex) in prop.comboParams" :key="comboIndex">
+                                        <div slot="header">
+                                          <v-card-title class="headline">
+                                            Combo Param #{{comboIndex}} : {{comboParam.text}}
+                                            <v-spacer></v-spacer>
+                                            <v-tooltip top>
+                                              <v-btn slot="activator" icon :disabled="comboIndex == 0" @click.stop="moveUpCombo(index, j, comboIndex)">
+                                                <v-icon>keyboard_arrow_up</v-icon>
+                                              </v-btn>
+                                              Move Up
+                                            </v-tooltip>
+                                            <v-tooltip top>
+                                              <v-btn slot="activator" icon :disabled="comboIndex >= prop.comboParams.length - 1" @click.stop="moveDownCombo(index, j, comboIndex)">
+                                                <v-icon>keyboard_arrow_down</v-icon>
+                                              </v-btn>
+                                              Move Down
+                                            </v-tooltip>
+                                            <v-tooltip top>
+                                              <v-btn slot="activator" icon @click.stop="removeCombo(index, j, comboIndex)">
+                                                <v-icon>clear</v-icon>
+                                              </v-btn>
+                                              Remove
+                                            </v-tooltip>
+                                          </v-card-title>
+                                        </div>
+                                        <v-card>
+                                          <v-flex v-for="(param, paramIndex) in comboPage" :key="paramIndex">
+                                            <v-text-field v-if="param.type == 'text'"
+                                              :name="j"
+                                              :label="param.label"
+                                              id="id"
+                                              v-model="comboParam[param.bound]"
+                                            ></v-text-field>
+                                          </v-flex>
+                                        </v-card>
+                                      </v-expansion-panel-content>
+                                    </v-expansion-panel>
+                                    <v-divider></v-divider>
+                                    <v-layout column align-center>
+                                      <v-tooltip top>
+                                        <v-btn slot="activator" :color="color2" icon @click.stop="addCombo(index, j)">
+                                          <v-icon>add</v-icon>
+                                        </v-btn>
+                                        Add
+                                      </v-tooltip>
+                                    </v-layout>    
+                                  </v-expansion-panel-content>
+                                </v-expansion-panel>
+                                
+                              </v-container>
+                            </v-flex>
+                          </v-card>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                      <v-divider></v-divider>
                       <v-layout column align-center>
                         <v-tooltip top>
-                          <v-btn slot="activator" :color="color2" icon @click.stop="addCombo(index, j)">
+                          <v-btn slot="activator" :color="color" icon @click.stop="addProp(index)">
                             <v-icon>add</v-icon>
                           </v-btn>
                           Add
                         </v-tooltip>
                       </v-layout>
-                    </v-container>
-                  </v-flex>
-                </v-card>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-container>
               </v-flex>
-              <v-layout column align-center>
-                <v-tooltip top>
-                  <v-btn slot="activator" :color="color" icon @click.stop="addProp(index)">
-                    <v-icon>add</v-icon>
-                  </v-btn>
-                  Add
-                </v-tooltip>
-              </v-layout>
-            </v-container>
-          </v-flex>
-          
-          <v-divider v-if="index < aces.length - 1"></v-divider>
-        </v-card>
-        <br  v-if="index < aces.length - 1">
-      </v-layout>
+            </v-card>
+          </v-layout>    
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+      
       <br>
       <v-card>
         <v-divider></v-divider>
@@ -248,6 +253,7 @@ export default {
   components: {info, draggableList},
   data () {
     return {
+      expandIndex: 0,
       rightDrawer: false,
       acePage: [
         {
@@ -323,9 +329,15 @@ export default {
           bound: 'displayString'
         },
         {
+          type: 'div'
+        },
+        {
           type: 'props',
           label: 'Properties',
           bound: 'props'
+        },
+        {
+          type: 'div'
         },
         {
           type: 'code',
@@ -422,8 +434,8 @@ export default {
       ],
       aces: [],
       defaultAce: {
-        visible: true,
         isCombo: false,
+        expandIndex: 0,
         typeC2: '',
         typeC3: '',
         categoryName: '',
@@ -441,7 +453,7 @@ export default {
         codeC3: ''
       },
       defaultProp: {
-        visible: true,
+        expandIndex: 0,
         typeC2: '',
         typeC3: '',
         idC3: '',
@@ -453,7 +465,6 @@ export default {
         comboParams: []
       },
       defaultComboParam: {
-        visible: true,
         id: '',
         text: ''
       },
@@ -500,6 +511,12 @@ export default {
     addAce () {
       var toAdd = JSON.parse(JSON.stringify(this.defaultAce))
       this.aces.push(toAdd)
+      setTimeout(() => {
+        this.expandIndex = this.aces.length - 1
+        setTimeout(() => {
+          this.$vuetify.goTo('#ace' + this.expandIndex, {duration: 500, offset: -100, easing: 'easeInOutCubic'})
+        }, 800)
+      }, 100)
     },
     moveUpAce (index) {
       var temp = this.aces[index - 1]
@@ -507,6 +524,7 @@ export default {
       this.aces[index] = temp
       this.aces.push({})
       this.aces.splice(this.aces.length - 1, 1)
+      this.expandIndex -= (this.expandIndex === index)
     },
     moveDownAce (index) {
       var temp = this.aces[index + 1]
@@ -514,13 +532,18 @@ export default {
       this.aces[index] = temp
       this.aces.push({})
       this.aces.splice(this.aces.length - 1, 1)
+      this.expandIndex += (this.expandIndex === index)
     },
     removeAce (index) {
       this.aces.splice(index, 1)
+      this.expandIndex -= (this.expandIndex === this.aces.length)
     },
     addProp (index) {
       var toAdd = JSON.parse(JSON.stringify(this.defaultProp))
       this.aces[index].props.push(toAdd)
+      setTimeout(() => {
+        this.aces[index].expandIndex = this.aces[index].props.length - 1
+      }, 500)
     },
     moveUpProp (index, subindex) {
       var temp = this.aces[index].props[subindex - 1]
@@ -528,6 +551,7 @@ export default {
       this.aces[index].props[subindex] = temp
       this.aces[index].props.push({})
       this.aces[index].props.splice(this.aces[index].props.length - 1, 1)
+      this.aces[index].expandIndex -= (this.aces[index].expandIndex === subindex)
     },
     moveDownProp (index, subindex) {
       var temp = this.aces[index].props[subindex + 1]
@@ -535,13 +559,18 @@ export default {
       this.aces[index].props[subindex] = temp
       this.aces[index].props.push({})
       this.aces[index].props.splice(this.aces[index].props.length - 1, 1)
+      this.aces[index].expandIndex += (this.aces[index].expandIndex === subindex)
     },
     removeProp (index, subindex) {
       this.aces[index].props.splice(subindex, 1)
+      this.aces[index].expandIndex -= (this.aces[index].expandIndex === this.aces[index].props.length)
     },
     addCombo (index, subindex) {
       var toAdd = JSON.parse(JSON.stringify(this.defaultComboParam))
       this.aces[index].props[subindex].comboParams.push(toAdd)
+      setTimeout(() => {
+        this.aces[index].props[subindex].expandIndex = this.aces[index].props[subindex].comboParams.length - 1
+      }, 500)
     },
     moveUpCombo (index, subindex, combo) {
       var temp = this.aces[index].props[subindex].comboParams[combo - 1]
@@ -549,6 +578,7 @@ export default {
       this.aces[index].props[subindex].comboParams[combo] = temp
       this.aces[index].props[subindex].comboParams.push({})
       this.aces[index].props[subindex].comboParams.splice(this.aces[index].props[subindex].comboParams.length - 1, 1)
+      this.aces[index].props[subindex].expandIndex -= (this.aces[index].props[subindex].expandIndex === combo)
     },
     moveDownCombo (index, subindex, combo) {
       var temp = this.aces[index].props[subindex].comboParams[combo + 1]
@@ -556,9 +586,11 @@ export default {
       this.aces[index].props[subindex].comboParams[combo] = temp
       this.aces[index].props[subindex].comboParams.push({})
       this.aces[index].props[subindex].comboParams.splice(this.aces[index].props[subindex].comboParams.length - 1, 1)
+      this.aces[index].props[subindex].expandIndex += (this.aces[index].props[subindex].expandIndex === combo)
     },
     removeCombo (index, subindex, combo) {
       this.aces[index].props[subindex].comboParams.splice(combo, 1)
+      this.aces[index].props[subindex].expandIndex -= (this.aces[index].props[subindex].expandIndex === this.aces[index].props[subindex].comboParams.length)
     },
     checkPropAppearance (needsCombo, isCombo) {
       if (needsCombo === 0) {
@@ -575,10 +607,10 @@ export default {
       this.aces = data
     },
     picked (index) {
-      this.aces[index].visible = true
       setTimeout(() => {
         this.$vuetify.goTo('#ace' + index, {duration: 500, offset: -100, easing: 'easeInOutCubic'})
-      }, 10)
+      }, 500 * (this.expandIndex !== index))
+      this.expandIndex = index
     }
   }
 }
