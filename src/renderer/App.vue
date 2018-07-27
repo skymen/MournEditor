@@ -267,7 +267,9 @@ export default {
     ]
   }),
   mounted () {
-    this.dark = (localStorage.darkMode === '1')
+    if (localStorage.darkMode) {
+      this.dark = (localStorage.darkMode === '1')
+    }
     setTimeout(() => {
       this.reload = true
     }, 10)

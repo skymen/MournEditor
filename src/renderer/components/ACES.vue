@@ -86,7 +86,8 @@
                   <codemirror v-model="ace[item.bound]"></codemirror>
                 </v-card>
                 
-                <v-container v-if="item.type == 'props'">
+                <v-card v-if="item.type == 'props'" :color="color">
+                  <br>
                   <v-expansion-panel>
                     <v-expansion-panel-content lazy>
                       <div slot="header">
@@ -122,7 +123,7 @@
                               </v-tooltip>
                             </v-card-title>
                           </div>
-                          <v-card :color="color">
+                          <v-card>
                             <v-flex v-for="(property, l) in propPage" :key="l">
                               <v-text-field v-if="property.type == 'text' && checkPropAppearance(property.needsCombo, prop.isCombo)"
                                 :name="index"
@@ -146,7 +147,8 @@
                                 :label="property.label"
                               ></v-checkbox>
 
-                              <v-container v-if="property.type == 'comboParams' && checkPropAppearance(property.needsCombo, prop.isCombo)">
+                              <v-card :color="color" v-if="property.type == 'comboParams' && checkPropAppearance(property.needsCombo, prop.isCombo)">
+                                <br>
                                 <v-expansion-panel>
                                   <v-expansion-panel-content lazy>
                                     <div slot="header">
@@ -205,8 +207,8 @@
                                     </v-layout>    
                                   </v-expansion-panel-content>
                                 </v-expansion-panel>
-                                
-                              </v-container>
+                                <br>
+                              </v-card>
                             </v-flex>
                           </v-card>
                         </v-expansion-panel-content>
@@ -222,7 +224,8 @@
                       </v-layout>
                     </v-expansion-panel-content>
                   </v-expansion-panel>
-                </v-container>
+                  <br>
+                </v-card>
               </v-flex>
             </v-card>
           </v-layout>    
@@ -317,8 +320,8 @@ export default {
         },
         {
           type: 'text',
-          label: 'Display string',
-          bound: 'displayString'
+          label: 'Description',
+          bound: 'description'
         },
         {
           type: 'div'
@@ -326,7 +329,7 @@ export default {
         {
           type: 'text',
           label: 'Script name',
-          bound: 'displayString'
+          bound: 'script'
         },
         {
           type: 'div'
