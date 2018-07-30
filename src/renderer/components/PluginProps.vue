@@ -163,8 +163,12 @@ export default {
       },
       justUpdated: false,
       info: {
-        title: 'Test',
-        content: ['Test']
+        title: 'Properties',
+        content: [
+          'Here you can add properties to the plugin, using the plus button at the bottom of the page, or on the side bar.',
+          'Using the sidebar you can navigate to a specific property and reorder them to your liking.',
+          'Properties in C2 and C3 are different, so you need to be careful if you\'re using a C3 only property type.'
+        ]
       },
       expandIndex: 0
     }

@@ -57,8 +57,15 @@ export default {
         c3: ''
       },
       info: {
-        title: 'Test',
-        content: ['Test']
+        title: 'Global variables',
+        content: [
+          'This is code that will be added at the top of the runtime files. This can be used to define global variables that can then be accessed from all the other functions.',
+          'Tips for the code editor:',
+          'You can use F11 to toggle fullscreen (or Escape to get out of fullscreen).',
+          'You can use CTRL+F to search in the code editor, and ALT+F to make the search bar persistant.',
+          'You can use CTRL+Q to fold the current line.',
+          'You can use CTRL+Space to use autocomplete. If multiple choices are available a small menu will appear. Else it will automatically complete the word. Using CTRL+Space when not in the middle of a word, all of the possible completes appear.'
+        ]
       }
     }
   },

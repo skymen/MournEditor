@@ -57,8 +57,21 @@ export default {
         instance: '{\n  Foo(num)\n  {\n    console.log( "I got the number: " + num );\n  },\n\n  Bar(str)\n  {\n    console.log( "I got the string: " + str );\n  }\n}'
       },
       info: {
-        title: 'Test',
-        content: ['Test']
+        title: 'Functions',
+        content: [
+          'This page is divided in 3 parts:',
+          '1 - Instance Constructor Body',
+          'This is the code that gets added to the OnCreate method. This can be used to get properties and initialize them.',
+          '2 - Routines',
+          'These are global functions accessible from the other functions but that can\'t access the plugin\'s prototype (aka this).',
+          '3 - Instance Object',
+          'These are functions attached to the object. They can access the object\'s attributes and get accessed through "this.functionName" from other functions.',
+          'Tips for the code editor:',
+          'You can use F11 to toggle fullscreen (or Escape to get out of fullscreen).',
+          'You can use CTRL+F to search in the code editor, and ALT+F to make the search bar persistant.',
+          'You can use CTRL+Q to fold the current line.',
+          'You can use CTRL+Space to use autocomplete. If multiple choices are available a small menu will appear. Else it will automatically complete the word. Using CTRL+Space when not in the middle of a word, all of the possible completes appear.'
+        ]
       }
     }
   },

@@ -368,5 +368,8 @@ export default {
     background-repeat: repeat-x;
   }
   .CodeMirror { z-index: 0 }
+  .CodeMirror-fullscreen {
+    z-index: 9999;
+  }
   /* Global CSS */
 </style>

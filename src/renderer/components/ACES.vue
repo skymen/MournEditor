@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap justify-center id="wrapper">
     <v-navigation-drawer right clipped enable-resize-watcher fixed app v-model="rightDrawer">
-      <draggableList :data="aces" :update="sortUpdate" prename="ACE #" :clicked="picked"/>
+      <draggableList :data="aces" :update="sortUpdate" :clicked="picked"/>
       <v-layout column align-center>
         <v-tooltip top>
           <v-btn slot="activator" :color="color" icon @click.stop="addAce()">
@@ -32,7 +32,7 @@
         <v-expansion-panel-content lazy v-for="(ace, index) in aces" :id="'ace' + index" :key="index">
           <div slot="header">
             <v-card-title class="headline">
-              ACE #{{index}} : {{ace.name}}
+              {{ace.type === undefined ? 'ACE' : ace.type}} #{{index}} : {{ace.name}}
               <v-spacer></v-spacer>
               <v-tooltip top>
                 <v-btn slot="activator" icon :disabled="index == 0" @click.stop="moveUpAce(index)">
@@ -66,12 +66,14 @@
 
                 <v-divider v-if="item.type == 'div'"></v-divider>
                 
-                <v-combobox v-if="item.type == 'combo'"
+                <v-combobox v-if="item.type == 'combo' && (item.aceType === undefined || item.aceType === ace.type)"
                   v-model="ace[item.bound]"
                   :name="index"
                   :items="item.items"
                   :label="item.label"
                   :multiple="item.multiple"
+                  :chips="item.multiple"
+                  :deletable-chips="item.multiple"
                 ></v-combobox>
 
                 <v-checkbox v-if="item.type == 'check'"
@@ -261,17 +263,10 @@ export default {
       acePage: [
         {
           type: 'combo',
-          label: 'Type C2',
-          bound: 'typeC2',
+          label: 'Type',
+          bound: 'type',
           multiple: false,
           items: ['Condition', 'Action', 'Expression']
-        },
-        {
-          type: 'combo',
-          label: 'Type C3',
-          bound: 'typeC3',
-          multiple: false,
-          items: ['conditions', 'actions', 'expressions']
         },
         {
           type: 'text',
@@ -288,20 +283,32 @@ export default {
         },
         {
           type: 'text',
-          label: 'C2 Id',
-          bound: 'idC2'
-        },
-        {
-          type: 'text',
           label: 'C3 Id',
           bound: 'idC3'
         },
         {
           type: 'combo',
-          label: 'Flags C2',
-          bound: 'flagC2',
+          label: 'Condition Flags',
+          bound: 'Cflags',
           multiple: true,
-          items: ['cf_none', 'cf_trigger', 'cf_fake_trigger', 'cf_static', 'cf_not_invertible', 'cf_deprecated', 'cf_incompatible_with_triggers', 'cf_looping', 'af_none', 'af_deprecated', 'ef_return_number', 'ef_return_string', 'ef_return_any', 'ef_variadic_parameters', 'ef_deprecated']
+          aceType: 'Condition',
+          items: ['None', 'Trigger', 'Fake trigger', 'Static', 'Not invertible', 'Deprecated', 'Incompatible with triggers', 'Looping']
+        },
+        {
+          type: 'combo',
+          label: 'Action Flags',
+          bound: 'Aflags',
+          multiple: true,
+          aceType: 'Action',
+          items: ['None', 'Deprecated']
+        },
+        {
+          type: 'combo',
+          label: 'Expression Flags',
+          bound: 'Eflags',
+          multiple: true,
+          aceType: 'Expression',
+          items: ['Return Number', 'Return String', 'Return Any', 'Variadic Parameters', 'Deprecated']
         },
         {
           type: 'check',
@@ -443,9 +450,10 @@ export default {
         typeC3: '',
         categoryName: '',
         categoryId: '',
-        idC2: 0,
         idC3: '',
-        flagC2: [],
+        Aflags: [],
+        Cflags: [],
+        Eflags: [],
         highlight: false,
         name: '',
         displayString: '',
@@ -457,8 +465,7 @@ export default {
       },
       defaultProp: {
         expandIndex: 0,
-        typeC2: '',
-        typeC3: '',
+        type: '',
         idC3: '',
         label: '',
         description: '',
@@ -472,8 +479,19 @@ export default {
         text: ''
       },
       info: {
-        title: 'Test',
-        content: ['Test']
+        title: 'ACES',
+        content: [
+          'Here you can define all of the ACES.',
+          'The ACE card\'s title changes according to its type (Condition, Action, Expression).',
+          'On each ACE, you can add properties.',
+          'If the property is a combo property, then you can also add combo params.',
+          'You can also use the side bar to navigate between ACES and reorder them.',
+          'Tips for the code editor:',
+          'You can use F11 to toggle fullscreen (or Escape to get out of fullscreen).',
+          'You can use CTRL+F to search in the code editor, and ALT+F to make the search bar persistant.',
+          'You can use CTRL+Q to fold the current line.',
+          'You can use CTRL+Space to use autocomplete. If multiple choices are available a small menu will appear. Else it will automatically complete the word. Using CTRL+Space when not in the middle of a word, all of the possible completes appear.'
+        ]
       }
     }
   },

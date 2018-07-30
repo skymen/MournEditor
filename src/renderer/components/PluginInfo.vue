@@ -126,12 +126,7 @@ export default {
           label: 'Flags',
           bound: 'flags',
           multiple: true,
-          items: ['pf_singleglobal', 'pf_texture', 'pf_animations', 'pf_tiling', 'pf_position_aces', 'pf_size_aces', 'pf_appearance_aces', 'pf_zorder_aces']
-        },
-        {
-          type: 'check',
-          label: 'C3 Is Single Global',
-          bound: 'c3IsSingleGlobal'
+          items: ['Single Global', 'Texture', 'Animations', 'Tiling', 'Position Aces', 'Size Aces', 'Appearance Aces', 'Zorder Aces']
         },
         {
           type: 'combo',
@@ -153,12 +148,14 @@ export default {
         id: '',
         type: '',
         flags: [],
-        c3IsSingleGlobal: false,
         supportedRuntimes: ['c2', 'c3']
       },
       info: {
-        title: 'Test',
-        content: ['Test']
+        title: 'Plugin Info',
+        content: [
+          'Here you specify the plugin\'s information.',
+          'You\'ll specify which runtimes you support. So if you don\'t support one of them, you will not need to fill info about that unsupported runtime.'
+        ]
       }
     }
   },
