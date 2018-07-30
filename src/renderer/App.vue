@@ -306,7 +306,9 @@ export default {
             }
             var fileData = JSON.parse(data)
             this.saveFile.forEach(element => {
-              localStorage[element] = fileData[element]
+              if (fileData[element]) {
+                localStorage[element] = fileData[element]
+              }
             })
             this.$router.push('reload')
           })
@@ -316,7 +318,9 @@ export default {
     save (newFile = false) {
       var fileData = {}
       this.saveFile.forEach(element => {
-        fileData[element] = localStorage[element]
+        if (localStorage[element]) {
+          fileData[element] = localStorage[element]
+        }
       })
       if (localStorage.savePath) {
         try {
