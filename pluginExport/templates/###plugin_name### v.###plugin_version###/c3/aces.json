@@ -1,0 +1,47 @@
+{
+$$$ DOMAIN="ACE" DELIMITER="," 
+"###CATEGORY_ID###":
+{
+	$$${
+	"###ACES_C3_JSON_TYPE###":
+	[
+		$$${
+		{  
+			"id": "###ID_C3###",
+			"c2id": ###ID_C2###,
+			"scriptName": "###SCRIPT_NAME###",
+			"expressionName": "###SCRIPT_NAME###",
+			"highlight": ###HIGHLIGHT###,
+			"returnType": "###RETURN_TYPE_C3###",
+			"isVariadicParameters": ###VARIADIC_PARAMS_C3###,
+
+			"params": 
+			[
+				$$${
+				{ 
+					"id": "###PARAM_ID_C3###",
+					"type": "###PARAM_TYPE_C3###"
+					, "initialValue": "###PARAM_INIT_VALUE###" 
+					, "initialValue": "###PARAM_INIT_COMBO_C3###" 
+
+					$$${!!!
+					,"ignore-this": "###IS_COMBO_PARAM###"
+					,"items": [
+						$$${
+							"###PARAM_COMBO_ID###"
+						$$$}
+							]
+					$$$}
+
+				}
+				$$$}
+			]				
+		}
+		$$$}
+	]
+	$$$}
+}
+$$$}
+
+$$$
+}

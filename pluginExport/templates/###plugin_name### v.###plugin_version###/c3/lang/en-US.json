@@ -1,0 +1,71 @@
+{
+	"languageTag": "en-US",
+	"fileDescription": "Strings for ###PLUGIN_NAME###.",
+	"text": 
+	{
+		"plugins": 
+		{
+			"###PLUGIN_ID_IN_LOWER_CASE###": 
+			{
+				"name": "###PLUGIN_NAME###",
+				"description": "###PLUGIN_DESCRIPTION###",
+				"help-url": "###PLUGIN_HELP_URL###",
+				"properties": 
+				{
+					$$$ DOMAIN="PROPS" DELIMITER="," 
+					"###ID_C3###": 
+					{
+						"name": "###NAME###"
+						,"desc": "###DESCRIPTION###"
+					}
+					$$$
+				},
+				
+				"aceCategories": 
+				{
+					$$$ DOMAIN="ACE" DELIMITER="," 
+					"###CATEGORY_ID###": "###CATEGORY_NAME###"
+					$$$
+				},
+				
+
+				$$$ DOMAIN="ACE" DELIMITER=","
+				"###ACES_C3_JSON_TYPE###": 
+				{
+					$$${
+					"###ID_C3###": 
+					{
+						$$${
+						"list-name": "###LIST_NAME###",
+						"display-text": "###DISPLAY_STRING###",
+						"translated-name": "###LIST_NAME###",
+						"description": "###DESCRIPTION###",
+						"params": 
+						{
+							$$${
+							"###PARAM_ID_C3###": 
+							{ 
+								"name": "###PARAM_LABEL###"
+								,"desc": "###PARAM_DESCRIPTION###"
+								$$${!!!
+								,"ignore-this": "###IS_COMBO_PARAM###"
+									,"items": {
+									$$${
+										"###PARAM_COMBO_ID###": "###PARAM_COMBO_TEXT###"
+									$$$}
+									}
+								$$$}
+							}
+							$$$}
+						}
+						$$$}
+					}
+					$$$}
+				}
+				$$$
+
+
+			}
+		}
+	}
+}

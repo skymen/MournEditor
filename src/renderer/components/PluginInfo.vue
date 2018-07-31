@@ -122,11 +122,21 @@ export default {
           items: ['object', 'world']
         },
         {
+          type: 'check',
+          label: 'Rotatable',
+          bound: 'rotatable'
+        },
+        {
+          type: 'check',
+          label: 'C3 Supports Effects',
+          bound: 'supportsEffects'
+        },
+        {
           type: 'combo',
           label: 'Flags',
           bound: 'flags',
           multiple: true,
-          items: ['Single Global', 'Texture', 'Animations', 'Tiling', 'Position Aces', 'Size Aces', 'Appearance Aces', 'Zorder Aces']
+          items: ['Single Global', 'Texture', 'Animations', 'Tiling', 'Position Aces', 'Angle Aces', 'Size Aces', 'Appearance Aces', 'Zorder Aces']
         },
         {
           type: 'combo',
@@ -137,7 +147,7 @@ export default {
         }
       ],
       pluginInfo: {
-        name: '',
+        name: 'MyPlugin',
         version: '',
         description: '',
         author: '',
@@ -145,8 +155,10 @@ export default {
         helpUrl: '',
         c2Category: '',
         c3Category: '',
-        id: '',
+        id: 'MyPlugin',
         type: '',
+        rotatable: false,
+        supportsEffects: true,
         flags: [],
         supportedRuntimes: ['c2', 'c3']
       },

@@ -81,7 +81,7 @@
                   :label="item.label"
                 ></v-checkbox>
 
-                <v-card v-if="item.type == 'code'">
+                <v-card v-if="item.type == 'code'  && (item.aceType === undefined || item.aceType === ace.type)">
                   <v-card-title class="headline">
                     {{item.label}}
                   </v-card-title>
@@ -351,13 +351,14 @@ export default {
         },
         {
           type: 'code',
-          label: 'Code C2',
+          label: 'Code',
           bound: 'codeC2'
         },
         {
           type: 'code',
-          label: 'Code C3',
-          bound: 'codeC3'
+          label: 'Code C3 Runtime (Expression)',
+          bound: 'codeC3',
+          aceType: 'Expression'
         }
       ],
       propPage: [
@@ -446,8 +447,7 @@ export default {
       defaultAce: {
         isCombo: false,
         expandIndex: 0,
-        typeC2: '',
-        typeC3: '',
+        type: '',
         categoryName: '',
         categoryId: '',
         idC3: '',
@@ -464,8 +464,10 @@ export default {
         codeC3: ''
       },
       defaultProp: {
+        isCombo: false,
         expandIndex: 0,
-        type: '',
+        typeC2: '',
+        typeC3: '',
         idC3: '',
         label: '',
         description: '',

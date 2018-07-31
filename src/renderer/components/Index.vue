@@ -2,7 +2,7 @@
     <v-layout column wrap align-center fill-height>
         <v-layout row wrap align-center fill-height>
             <v-card ripple class="image">
-                <v-card-media src="./src/renderer/assets/logo.png" height="600px" @click="$router.push('/info')">
+                <v-card-media :src="require('@/assets/logo.png')" height="600px" @click="$router.push('/info')">
                 </v-card-media>
             </v-card>    
         </v-layout>

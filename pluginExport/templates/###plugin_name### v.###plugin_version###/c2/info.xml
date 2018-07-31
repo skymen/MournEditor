@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<c2addon>
+	<!-- One of: plugin, behavior, effect -->
+	<type>plugin</type>
+	
+	<name>###PLUGIN_NAME###</name>	
+	<version>###PLUGIN_VERSION###</version>
+	<author>###PLUGIN_AUTHOR###</author>
+	<website>###PLUGIN_AUTHOR_WEBSITE###</website>
+	<documentation>###PLUGIN_HELP_URL###</documentation>
+	<description>###PLUGIN_DESCRIPTION###</description>
+</c2addon>
