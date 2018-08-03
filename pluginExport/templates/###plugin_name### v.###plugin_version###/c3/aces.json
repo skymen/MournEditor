@@ -23,16 +23,12 @@ $$$ DOMAIN="ACE" DELIMITER=","
 					"type": "###PARAM_TYPE_C3###"
 					, "initialValue": "###PARAM_INIT_VALUE###" 
 					, "initialValue": "###PARAM_INIT_COMBO_C3###" 
-
+					, "items": 
+					[
 					$$${!!!
-					,"ignore-this": "###IS_COMBO_PARAM###"
-					,"items": [
-						$$${
-							"###PARAM_COMBO_ID###"
-						$$$}
-							]
+						"###PARAM_COMBO_ID###"
 					$$$}
-
+					]
 				}
 				$$$}
 			]				

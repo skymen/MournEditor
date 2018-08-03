@@ -102,18 +102,8 @@ export default {
           'Position Aces': 'pf_position_aces',
           'Size Aces': 'pf_size_aces',
           'Appearance Aces': 'pf_appearance_aces',
-          'Zorder Aces': 'pf_zorder_aces'
-        },
-        'PluginC3': {
-          'Single Global': 'this._info.SetIsSingleGlobal(true);',
-          'Texture': 'this._info.SetHasImage(true);',
-          'Animations': '',
-          'Tiling': 'this._info.SetIsTiled(true);',
-          'Angle Aces': 'this._info.AddCommonAngleACEs();',
-          'Position Aces': 'this._info.AddCommonPositionACEs();',
-          'Size Aces': 'this._info.AddCommonSizeACEs();',
-          'Appearance Aces': 'this._info.AddCommonAppearanceACEs();',
-          'Zorder Aces': 'this._info.AddCommonZOrderACEs();'
+          'Zorder Aces': 'pf_zorder_aces',
+          'Deprecated': 'pf_deprecated'
         }
       },
       path: '',
@@ -251,10 +241,12 @@ export default {
       '@@@PLUGIN_CATEGORY_C3 ' + pluginInfo.c3Category + '\n\n' +
       '@@@PLUGIN_ID ' + pluginInfo.id + '\n' +
       '@@@PLUGIN_ID_IN_LOWER_CASE ' + pluginInfo.id.toLowerCase() + '\n\n' +
-      '@@@PLUGIN_TYPE_C2 ' + pluginInfo.type + '\n' +
+      '@@@PLUGIN_IS_OBJECT_TYPE ' + (pluginInfo.type === 'object' ? 'yes' : '') + '\n' +
+      '@@@PLUGIN_IS_WORLD_TYPE ' + (pluginInfo.type === 'object' ? '' : 'yes') + '\n' +
       '@@@PLUGIN_FLAGS_C2 ' + this.getPluginFlagsC2(pluginInfo) + '\n' +
-      '###PLUGIN_FLAGS_C3\n' + this.getPluginFlagsC3(pluginInfo) + '\n###\n' +
       '@@@PLUGIN_ROTATABLE ' + pluginInfo.rotatable + '\n' +
+      '@@@PLUGIN_CANBEBUNDELED_C3 ' + pluginInfo.canBeBundled + '\n' +
+      '\n' + this.getPluginFlagsC3(pluginInfo) + '\n\n' +
       '@@@PLUGIN_SUPPORTED_RUNTIMES ' + this.getSupportedRuntimes(pluginInfo) + '\n'
       return fileText
     },
@@ -318,12 +310,28 @@ export default {
     },
     getPluginFlagsC3 (plugin) {
       var flagsList = plugin.flags
-      var replace = this.flags['PluginC3']
-      var endArr = []
-      flagsList.forEach(flag => {
-        endArr.push(replace[flag])
-      })
-      return 'this._info.SetIsRotatable(' + plugin.rotatable + ');\nthis._info.SetSupportsEffects(' + plugin.supportsEffects + ');\n' + endArr.join('\n')
+      var text = '' +
+      '@@@PLUGIN_ISSINGLEGLOBAL_C3 ' + this.getHasFlag(flagsList, 'Single Global', 'true', 'false') + '\n' +
+      '@@@PLUGIN_ISRESIZABLE_C3 ' + (plugin.resizable ? 'true' : 'false') + '\n' +
+      '@@@PLUGIN_HASIMAGE_C3 ' + this.getHasFlag(flagsList, 'Texture', 'true', 'false') + '\n' +
+      '@@@PLUGIN_ISTILED_C3 ' + this.getHasFlag(flagsList, 'Tiling', 'true', 'false') + '\n' +
+      '@@@PLUGIN_ISDEPRECATED_C3 ' + this.getHasFlag(flagsList, 'Deprecated', 'true', 'false') + '\n' +
+      '@@@PLUGIN_SUPPORTSEFFECTS ' + (plugin.supportsEffects ? 'true' : 'false') + '\n' +
+      '@@@PLUGIN_MUSTPREDRAW ' + (plugin.mustPredraw ? 'true' : 'false') + '\n\n' +
+      '@@@PLUGIN_AddCommonPositionACEs ' + this.getHasFlag(flagsList, 'Position Aces', 'yes', '') + '\n' +
+      '@@@PLUGIN_AddCommonSizeACEs ' + this.getHasFlag(flagsList, 'Size Aces', 'yes', '') + '\n' +
+      '@@@PLUGIN_AddCommonAngleACEs ' + this.getHasFlag(flagsList, 'Angle Aces', 'yes', '') + '\n' +
+      '@@@PLUGIN_AddCommonAppearanceACEs ' + this.getHasFlag(flagsList, 'Appearance Aces', 'yes', '') + '\n' +
+      '@@@PLUGIN_AddCommonZOrderACEs ' + this.getHasFlag(flagsList, 'Zorder Aces', 'yes', '') + '\n'
+
+      return text
+    },
+    getHasFlag (flagList, flag, ifHas, ifHasnt) {
+      if (flagList.includes(flag)) {
+        return ifHas
+      } else {
+        return ifHasnt
+      }
     },
     getSupportedRuntimes (plugin) {
       var array = plugin.supportedRuntimes

@@ -132,11 +132,26 @@ export default {
           bound: 'supportsEffects'
         },
         {
+          type: 'check',
+          label: 'C3 Can Be Bundled',
+          bound: 'canBeBundled'
+        },
+        {
+          type: 'check',
+          label: 'C3 Is Resizable',
+          bound: 'resizable'
+        },
+        {
+          type: 'check',
+          label: 'C3 Must Predraw',
+          bound: 'mustPredraw'
+        },
+        {
           type: 'combo',
           label: 'Flags',
           bound: 'flags',
           multiple: true,
-          items: ['Single Global', 'Texture', 'Animations', 'Tiling', 'Position Aces', 'Angle Aces', 'Size Aces', 'Appearance Aces', 'Zorder Aces']
+          items: ['Single Global', 'Texture', 'Animations', 'Tiling', 'Position Aces', 'Angle Aces', 'Size Aces', 'Appearance Aces', 'Zorder Aces', 'Deprecated']
         },
         {
           type: 'combo',
@@ -159,6 +174,9 @@ export default {
         type: '',
         rotatable: false,
         supportsEffects: true,
+        canBeBundled: true,
+        resizable: true,
+        mustPredraw: false,
         flags: [],
         supportedRuntimes: ['c2', 'c3']
       },

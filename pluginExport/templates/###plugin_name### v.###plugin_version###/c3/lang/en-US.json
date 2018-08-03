@@ -47,14 +47,12 @@
 							{ 
 								"name": "###PARAM_LABEL###"
 								,"desc": "###PARAM_DESCRIPTION###"
+								,"items": 
+								{
 								$$${!!!
-								,"ignore-this": "###IS_COMBO_PARAM###"
-									,"items": {
-									$$${
-										"###PARAM_COMBO_ID###": "###PARAM_COMBO_TEXT###"
-									$$$}
-									}
+									"###PARAM_COMBO_ID###": "###PARAM_COMBO_TEXT###"
 								$$$}
+								}
 							}
 							$$$}
 						}

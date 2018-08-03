@@ -3,7 +3,19 @@
 ###ROUTINES###
 
 {
+	$$$
+	// Ignore this: ###PLUGIN_IS_OBJECT_TYPE###
+	$$${
 	C3.Plugins.###PLUGIN_ID###.Instance = class ###PLUGIN_ID###Instance extends C3.SDKInstanceBase
+	$$$}
+	$$$
+
+	$$$
+	// Ignore this: ###PLUGIN_IS_WORLD_TYPE###	
+	$$${
+	C3.Plugins.###PLUGIN_ID###.Instance = class ###PLUGIN_ID###Instance extends C3.SDKWorldInstanceBase
+	$$$}
+	$$$
 	{
 		constructor(inst, properties)
 		{

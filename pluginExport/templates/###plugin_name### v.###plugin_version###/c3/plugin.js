@@ -30,8 +30,55 @@
 			this._info.SetCategory(PLUGIN_CATEGORY);
 			this._info.SetAuthor("###PLUGIN_AUTHOR###");
 			this._info.SetHelpUrl(lang(".help-url"));
+
+			$$$
+			// Ignore this: ###PLUGIN_IS_OBJECT_TYPE###	
+			this._info.SetPluginType("object");
+			$$$
+
+			$$$
+			// Ignore this: ###PLUGIN_IS_WORLD_TYPE###	
+			this._info.SetPluginType("world");
+			$$$
+
 			this._info.SetIsSingleGlobal(###PLUGIN_ISSINGLEGLOBAL_C3###);
+			this._info.SetCanBeBundled(###PLUGIN_CANBEBUNDELED_C3###);
+
+			this._info.SetIsResizable(###PLUGIN_ISRESIZABLE_C3###);
+			this._info.SetIsRotatable(###PLUGIN_ISROTATABLE###);
+			this._info.SetHasImage(###PLUGIN_HASIMAGE_C3###);
+			this._info.SetIsTiled(###PLUGIN_ISTILED_C3###);
+			this._info.SetIsDeprecated(###PLUGIN_ISDEPRECATED_C3###);
+			this._info.SetSupportsEffects(###PLUGIN_SUPPORTSEFFECTS###);
+			this._info.SetMustPreDraw(###PLUGIN_MUSTPREDRAW###);
+
 			
+			$$$
+			// Ignore this: ###PLUGIN_AddCommonPositionACEs###
+			this._info.AddCommonPositionACEs();
+			$$$
+
+			$$$
+			// Ignore this: ###PLUGIN_AddCommonSizeACEs###
+			this._info.AddCommonSizeACEs();
+			$$$
+
+			$$$
+			// Ignore this: ###PLUGIN_AddCommonAngleACEs###
+			this._info.AddCommonAngleACEs();
+			$$$
+
+			$$$
+			// Ignore this: ###PLUGIN_AddCommonAppearanceACEs###
+			this._info.AddCommonAppearanceACEs();
+			$$$
+
+			$$$
+			// Ignore this: ###PLUGIN_AddCommonZOrderACEs###
+			this._info.AddCommonZOrderACEs();
+			$$$
+
+		
 			// Support both the C2 and C3 runtimes
 			this._info.SetSupportedRuntimes([###PLUGIN_SUPPORTED_RUNTIMES###]);
 			
