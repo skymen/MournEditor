@@ -13,7 +13,7 @@
   </v-navigation-drawer>
 
   <v-flex xs11 class="mt-4">
-    
+
     <v-card>
       <v-layout row>
         <v-card-title class="headline">Plugin Properties</v-card-title>
@@ -67,7 +67,7 @@
               ></v-text-field>
 
               <v-divider v-if="item.type == 'div'"></v-divider>
-              
+
               <v-combobox v-if="item.type == 'combo'"
                 v-model="property[item.bound]"
                 :name="index"
@@ -85,7 +85,7 @@
         </v-layout>
       </v-expansion-panel-content>
     </v-expansion-panel>
-    
+
     <br>
     <v-card>
       <v-divider></v-divider>
@@ -100,7 +100,7 @@
     </v-card>
   </v-flex>
 </v-layout>
-  
+
 </template>
 
 <script>
@@ -215,7 +215,7 @@ export default {
       }, 100)
     },
     moveUp (index) {
-      var temp = this.properties[index - 1]
+      const temp = this.properties[index - 1]
       this.properties[index - 1] = this.properties[index]
       this.properties[index] = temp
       this.properties.push({})
@@ -223,7 +223,7 @@ export default {
       this.expandIndex -= this.expandIndex === index
     },
     moveDown (index) {
-      var temp = this.properties[index + 1]
+      const temp = this.properties[index + 1]
       this.properties[index + 1] = this.properties[index]
       this.properties[index] = temp
       this.properties.push({})
