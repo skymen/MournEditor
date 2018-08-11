@@ -9,11 +9,18 @@ $$$ DOMAIN="ACE" DELIMITER=","
 		{  
 			"id": "###ID_C3###",
 			"c2id": ###ID_C2###,
+			"isDeprecated": ###IS_DEPRECATED_C3###,
+			"isTrigger": ###IS_TRIGGER_C3###,
+			"isFakeTrigger": ###IS_FAKETRIGGER_C3###,
+			"isStatic": ###IS_STATIC_C3###,
+			"isLooping": ###IS_LOOPING_C3###,
+			"isInvertible": ###IS_INVERTIBLE_C3###,
+			"isCompatibleWithTriggers": ###IS_COMPATIBLEWITHTRIGGERS_C3###,
+			"isVariadicParameters": ###IS_VARIADIC_PARAMS_C3###,
 			"scriptName": "###SCRIPT_NAME###",
 			"expressionName": "###SCRIPT_NAME###",
 			"highlight": ###HIGHLIGHT###,
 			"returnType": "###RETURN_TYPE_C3###",
-			"isVariadicParameters": ###VARIADIC_PARAMS_C3###,
 
 			"params": 
 			[

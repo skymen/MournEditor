@@ -9,10 +9,10 @@
 	"documentation": "###PLUGIN_HELP_URL###",
 	"description": "###PLUGIN_DESCRIPTION###",
 	"editor-scripts": [
-						"plugin.js",
-						"type.js",
-						"instance.js"
-					],
+		"plugin.js",
+		"type.js",
+		"instance.js"
+	],
 	"file-list": [
 		"c2runtime/runtime.js",
 		"c3runtime/plugin.js",
