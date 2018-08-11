@@ -53,7 +53,7 @@ if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
-var theme = (localStorage.darkMode === '1' ? 'monokai' : 'mdn-like')
+const theme = (localStorage.darkMode === '1' ? 'monokai' : 'mdn-like')
 
 Vue.use(VueCodemirror,
   {
