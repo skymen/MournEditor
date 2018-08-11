@@ -11,7 +11,7 @@
       >
         <v-list>
           <v-tooltip right :disabled="!miniVariant" v-for="(item, i) in items" :key="i">
-            <v-list-tile 
+            <v-list-tile
               router
               :to="item.to"
               exact
@@ -24,7 +24,7 @@
                 <v-list-tile-title v-text="item.title"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
-            {{item.title}}  
+            {{item.title}}
           </v-tooltip>
         </v-list>
       </v-navigation-drawer>
@@ -40,7 +40,7 @@
             </v-btn>
             {{dark ? 'Switch to light mode' : 'Switch to dark mode' }}
           </v-tooltip>
-          
+
           <v-card>
             <v-card>
               <v-card-title
@@ -75,7 +75,7 @@
             </v-card>
           </v-card>
         </v-dialog>
-        
+
         <v-dialog v-if="dark"
           v-model="dialog2"
           max-width="500px"
@@ -132,7 +132,7 @@
             </v-btn>
             New file
           </v-tooltip>
-          
+
           <v-card>
             <v-card>
               <v-card-title
@@ -247,16 +247,14 @@
         <v-btn flat color="primary" @click.native="saveInfo = false">Close</v-btn>
       </v-snackbar>
       <v-footer app>
-        <span>&copy; Dedra 2018</span>
+        <span class="ml-2">&copy; Dedra 2018</span>
       </v-footer>
     </v-app>
   </div>
 </template>
 
 <script>
-var remote = require('electron').remote
-var dialog = remote.dialog
-const fs = require('fs')
+import fs from 'fs'
 
 const dialogOptions = {
   defaultPath: 'c:/',
@@ -317,7 +315,7 @@ export default {
         localStorage.darkMode = '0'
       }
 
-      var item = this.items.filter(item => item.to === this.$route.path)[0]
+      const item = this.items.filter(item => item.to === this.$route.path)[0]
       if (item) {
         if (item.needReload === 1) {
           this.$router.push('reload')
@@ -333,7 +331,7 @@ export default {
   },
   methods: {
     open () {
-      dialog.showOpenDialog(dialogOptions, fileName => {
+      this.$electron.remote.dialog.showOpenDialog(dialogOptions, fileName => {
         if (fileName !== undefined) {
           fs.readFile(fileName[0], 'utf-8', (err, data) => {
             if (err) {
@@ -341,7 +339,7 @@ export default {
               return
             }
             localStorage.savePath = fileName[0]
-            var fileData = JSON.parse(data)
+            const fileData = JSON.parse(data)
             this.saveFile.forEach(element => {
               if (fileData[element]) {
                 localStorage[element] = fileData[element]
@@ -354,7 +352,7 @@ export default {
       })
     },
     save (newFile = false) {
-      var fileData = {}
+      let fileData = {}
       this.saveFile.forEach(element => {
         if (localStorage[element]) {
           fileData[element] = localStorage[element]
@@ -371,7 +369,7 @@ export default {
           alert('Failed to save the file !')
         }
       } else {
-        dialog.showSaveDialog(dialogOptions, fileName => {
+        this.$electron.remote.dialog.showSaveDialog(dialogOptions, fileName => {
           if (fileName !== undefined) {
             try {
               fs.writeFileSync(fileName, JSON.stringify(fileData), 'utf-8')

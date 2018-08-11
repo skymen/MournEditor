@@ -64,7 +64,7 @@
             </v-card-title>
           </div>
           <v-layout column>
-            <v-card>
+            <v-card class="px-3">
               <v-flex v-for="(item, k) in acePage" :key="k">
                 <v-text-field v-if="item.type === 'text'"
                   :name="index"
@@ -143,7 +143,7 @@
                               
                             </v-card-title>
                           </div>
-                          <v-card>
+                          <v-card class="px-3">
                             <v-flex v-for="(property, l) in propPage" :key="l">
                               <v-text-field v-if="property.type === 'text' && checkPropAppearance(property.needsCombo, prop.isCombo)"
                                 :name="index"
@@ -233,7 +233,7 @@
                                         </v-btn>
                                         Add
                                       </v-tooltip>
-                                    </v-layout>    
+                                    </v-layout>
                                   </v-expansion-panel-content>
                                 </v-expansion-panel>
                                 <br>
@@ -257,10 +257,10 @@
                 </v-card>
               </v-flex>
             </v-card>
-          </v-layout>    
+          </v-layout>
         </v-expansion-panel-content>
       </v-expansion-panel>
-      
+
       <br>
       <v-card>
         <v-divider></v-divider>
