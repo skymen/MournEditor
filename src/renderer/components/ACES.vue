@@ -32,41 +32,50 @@
         <v-expansion-panel-content lazy v-for="(ace, index) in aces" :id="'ace' + index" :key="index">
           <div slot="header">
             <v-card-title class="headline">
-              {{ace.type === undefined ? 'ACE' : ace.type}} #{{index}} : {{ace.name}}
-              <v-spacer></v-spacer>
-              <v-tooltip top>
-                <v-btn slot="activator" icon :disabled="index == 0" @click.stop="moveUpAce(index)">
-                  <v-icon>keyboard_arrow_up</v-icon>
-                </v-btn>
-                Move Up
-              </v-tooltip>
-              <v-tooltip top>
-                <v-btn slot="activator" icon :disabled="index >= aces.length - 1" @click.stop="moveDownAce(index)">
-                  <v-icon>keyboard_arrow_down</v-icon>
-                </v-btn>
-                Move Down
-              </v-tooltip>
-              <v-tooltip top>
-                <v-btn slot="activator" icon @click.stop="removeAce(index)">
-                  <v-icon>clear</v-icon>
-                </v-btn>
-                Remove
-              </v-tooltip>
+              <v-layout row>
+                {{ace.type === undefined ? 'ACE' : ace.type}} #{{index}} : {{ace.name}}
+                <v-spacer></v-spacer>
+                <v-tooltip top>
+                  <v-btn slot="activator" icon @click.stop="copyAce(index)">
+                    <v-icon>file_copy</v-icon>
+                  </v-btn>
+                  Duplicate
+                </v-tooltip>
+                <v-tooltip top>
+                  <v-btn slot="activator" icon :disabled="index === 0" @click.stop="moveUpAce(index)">
+                    <v-icon>keyboard_arrow_up</v-icon>
+                  </v-btn>
+                  Move Up
+                </v-tooltip>
+                <v-tooltip top>
+                  <v-btn slot="activator" icon :disabled="index >= aces.length - 1" @click.stop="moveDownAce(index)">
+                    <v-icon>keyboard_arrow_down</v-icon>
+                  </v-btn>
+                  Move Down
+                </v-tooltip>
+                <v-tooltip top>
+                  <v-btn slot="activator" icon @click.stop="removeAce(index)">
+                    <v-icon>clear</v-icon>
+                  </v-btn>
+                  Remove
+                </v-tooltip>  
+              </v-layout>
+              
             </v-card-title>
           </div>
           <v-layout column>
             <v-card>
               <v-flex v-for="(item, k) in acePage" :key="k">
-                <v-text-field v-if="item.type == 'text'"
+                <v-text-field v-if="item.type === 'text'"
                   :name="index"
                   :label="item.label"
                   id="id"
                   v-model="ace[item.bound]"
                 ></v-text-field>
 
-                <v-divider v-if="item.type == 'div'"></v-divider>
+                <v-divider v-if="item.type === 'div'"></v-divider>
                 
-                <v-combobox v-if="item.type == 'combo' && (item.aceType === undefined || item.aceType === ace.type)"
+                <v-combobox v-if="item.type === 'combo' && (item.aceType === undefined || item.aceType === ace.type)"
                   v-model="ace[item.bound]"
                   :name="index"
                   :items="item.items"
@@ -76,19 +85,19 @@
                   :deletable-chips="item.multiple"
                 ></v-combobox>
 
-                <v-checkbox v-if="item.type == 'check'"
+                <v-checkbox v-if="item.type === 'check'"
                   v-model="ace[item.bound]"
                   :label="item.label"
                 ></v-checkbox>
 
-                <v-card v-if="item.type == 'code'  && (item.aceType === undefined || item.aceType === ace.type)">
+                <v-card v-if="item.type === 'code'  && (item.aceType === undefined || item.aceType === ace.type)">
                   <v-card-title class="headline">
                     {{item.label}}
                   </v-card-title>
                   <codemirror v-model="ace[item.bound]"></codemirror>
                 </v-card>
                 
-                <v-card v-if="item.type == 'props'" :color="color">
+                <v-card v-if="item.type === 'props'" :color="color">
                   <br>
                   <v-expansion-panel>
                     <v-expansion-panel-content lazy>
@@ -103,40 +112,49 @@
                         <v-expansion-panel-content lazy v-for="(prop, j) in ace.props" :key="j">
                           <div slot="header">
                             <v-card-title class="headline">
-                              Property #{{j}} : {{prop.label}}
-                              <v-spacer></v-spacer>
-                              <v-tooltip top>
-                                <v-btn slot="activator" icon :disabled="j == 0" @click.stop="moveUpProp(index, j)">
-                                  <v-icon>keyboard_arrow_up</v-icon>
-                                </v-btn>
-                                Move Up
-                              </v-tooltip>
-                              <v-tooltip top>
-                                <v-btn slot="activator" icon :disabled="j >= ace.props.length - 1" @click.stop="moveDownProp(index, j)">
-                                  <v-icon>keyboard_arrow_down</v-icon>
-                                </v-btn>
-                                Move Down
-                              </v-tooltip>
-                              <v-tooltip top>
-                                <v-btn slot="activator" icon @click.stop="removeProp(index, j)">
-                                  <v-icon>clear</v-icon>
-                                </v-btn>
-                                Remove
-                              </v-tooltip>
+                              <v-layout row>
+                                Property #{{j}} : {{prop.label}}
+                                <v-spacer></v-spacer>
+                                <v-tooltip top>
+                                  <v-btn slot="activator" icon @click.stop="copyProp(index, j)">
+                                    <v-icon>file_copy</v-icon>
+                                  </v-btn>
+                                  Duplicate
+                                </v-tooltip>
+                                <v-tooltip top>
+                                  <v-btn slot="activator" icon :disabled="j === 0" @click.stop="moveUpProp(index, j)">
+                                    <v-icon>keyboard_arrow_up</v-icon>
+                                  </v-btn>
+                                  Move Up
+                                </v-tooltip>
+                                <v-tooltip top>
+                                  <v-btn slot="activator" icon :disabled="j >= ace.props.length - 1" @click.stop="moveDownProp(index, j)">
+                                    <v-icon>keyboard_arrow_down</v-icon>
+                                  </v-btn>
+                                  Move Down
+                                </v-tooltip>
+                                <v-tooltip top>
+                                  <v-btn slot="activator" icon @click.stop="removeProp(index, j)">
+                                    <v-icon>clear</v-icon>
+                                  </v-btn>
+                                  Remove
+                                </v-tooltip>  
+                              </v-layout>
+                              
                             </v-card-title>
                           </div>
                           <v-card>
                             <v-flex v-for="(property, l) in propPage" :key="l">
-                              <v-text-field v-if="property.type == 'text' && checkPropAppearance(property.needsCombo, prop.isCombo)"
+                              <v-text-field v-if="property.type === 'text' && checkPropAppearance(property.needsCombo, prop.isCombo)"
                                 :name="index"
                                 :label="property.label"
                                 id="id"
                                 v-model="prop[property.bound]"
                               ></v-text-field>
 
-                              <v-divider v-if="property.type == 'div' && checkPropAppearance(property.needsCombo, prop.isCombo)"></v-divider>
+                              <v-divider v-if="property.type === 'div' && checkPropAppearance(property.needsCombo, prop.isCombo)"></v-divider>
                               
-                              <v-combobox v-if="property.type == 'combo' && checkPropAppearance(property.needsCombo, prop.isCombo)"
+                              <v-combobox v-if="property.type === 'combo' && checkPropAppearance(property.needsCombo, prop.isCombo)"
                                 v-model="prop[property.bound]"
                                 :name="index"
                                 :items="property.items"
@@ -144,12 +162,12 @@
                                 :multiple="property.multiple"
                               ></v-combobox>
 
-                              <v-checkbox v-if="property.type == 'check' && checkPropAppearance(property.needsCombo, prop.isCombo)"
+                              <v-checkbox v-if="property.type === 'check' && checkPropAppearance(property.needsCombo, prop.isCombo)"
                                 v-model="prop[property.bound]"
                                 :label="property.label"
                               ></v-checkbox>
 
-                              <v-card :color="color" v-if="property.type == 'comboParams' && checkPropAppearance(property.needsCombo, prop.isCombo)">
+                              <v-card :color="color" v-if="property.type === 'comboParams' && checkPropAppearance(property.needsCombo, prop.isCombo)">
                                 <br>
                                 <v-expansion-panel>
                                   <v-expansion-panel-content lazy>
@@ -164,31 +182,40 @@
                                       <v-expansion-panel-content lazy v-for="(comboParam, comboIndex) in prop.comboParams" :key="comboIndex">
                                         <div slot="header">
                                           <v-card-title class="headline">
-                                            Combo Param #{{comboIndex}} : {{comboParam.text}}
-                                            <v-spacer></v-spacer>
-                                            <v-tooltip top>
-                                              <v-btn slot="activator" icon :disabled="comboIndex == 0" @click.stop="moveUpCombo(index, j, comboIndex)">
-                                                <v-icon>keyboard_arrow_up</v-icon>
-                                              </v-btn>
-                                              Move Up
-                                            </v-tooltip>
-                                            <v-tooltip top>
-                                              <v-btn slot="activator" icon :disabled="comboIndex >= prop.comboParams.length - 1" @click.stop="moveDownCombo(index, j, comboIndex)">
-                                                <v-icon>keyboard_arrow_down</v-icon>
-                                              </v-btn>
-                                              Move Down
-                                            </v-tooltip>
-                                            <v-tooltip top>
-                                              <v-btn slot="activator" icon @click.stop="removeCombo(index, j, comboIndex)">
-                                                <v-icon>clear</v-icon>
-                                              </v-btn>
-                                              Remove
-                                            </v-tooltip>
+                                            <v-layout row>
+                                              Combo Param #{{comboIndex}} : {{comboParam.text}}
+                                              <v-spacer></v-spacer>
+                                              <v-tooltip top>
+                                                <v-btn slot="activator" icon @click.stop="copyCombo(index, j, comboIndex)">
+                                                  <v-icon>file_copy</v-icon>
+                                                </v-btn>
+                                                Duplicate
+                                              </v-tooltip>
+                                              <v-tooltip top>
+                                                <v-btn slot="activator" icon :disabled="comboIndex === 0" @click.stop="moveUpCombo(index, j, comboIndex)">
+                                                  <v-icon>keyboard_arrow_up</v-icon>
+                                                </v-btn>
+                                                Move Up
+                                              </v-tooltip>
+                                              <v-tooltip top>
+                                                <v-btn slot="activator" icon :disabled="comboIndex >= prop.comboParams.length - 1" @click.stop="moveDownCombo(index, j, comboIndex)">
+                                                  <v-icon>keyboard_arrow_down</v-icon>
+                                                </v-btn>
+                                                Move Down
+                                              </v-tooltip>
+                                              <v-tooltip top>
+                                                <v-btn slot="activator" icon @click.stop="removeCombo(index, j, comboIndex)">
+                                                  <v-icon>clear</v-icon>
+                                                </v-btn>
+                                                Remove
+                                              </v-tooltip>  
+                                            </v-layout>
+                                            
                                           </v-card-title>
                                         </div>
                                         <v-card>
                                           <v-flex v-for="(param, paramIndex) in comboPage" :key="paramIndex">
-                                            <v-text-field v-if="param.type == 'text'"
+                                            <v-text-field v-if="param.type === 'text'"
                                               :name="j"
                                               :label="param.label"
                                               id="id"
@@ -290,7 +317,7 @@ export default {
           type: 'combo',
           label: 'Condition Flags',
           bound: 'Cflags',
-          multiple: true,
+          multiple: false,
           aceType: 'Condition',
           items: ['None', 'Trigger', 'Fake trigger', 'Static', 'Not invertible', 'Deprecated', 'Incompatible with triggers', 'Looping']
         },
@@ -298,7 +325,7 @@ export default {
           type: 'combo',
           label: 'Action Flags',
           bound: 'Aflags',
-          multiple: true,
+          multiple: false,
           aceType: 'Action',
           items: ['None', 'Deprecated']
         },
@@ -306,7 +333,7 @@ export default {
           type: 'combo',
           label: 'Expression Flags',
           bound: 'Eflags',
-          multiple: true,
+          multiple: false,
           aceType: 'Expression',
           items: ['Return Number', 'Return String', 'Return Any', 'Variadic Parameters', 'Deprecated']
         },
@@ -451,17 +478,17 @@ export default {
         categoryName: '',
         categoryId: '',
         idC3: '',
-        Aflags: [],
-        Cflags: [],
-        Eflags: [],
+        Aflags: ['None'],
+        Cflags: ['None'],
+        Eflags: ['Return Number'],
         highlight: false,
         name: '',
         displayString: '',
         description: '',
-        script: '',
+        script: 'Script',
         props: [],
-        codeC2: '',
-        codeC3: ''
+        codeC2: 'Script () {\n\t//Code\n}',
+        codeC3: 'Script () {\n\t//Code\n}'
       },
       defaultProp: {
         isCombo: false,
@@ -541,6 +568,11 @@ export default {
         }, 800)
       }, 100)
     },
+    copyAce (index) {
+      var temp = JSON.parse(JSON.stringify(this.aces[index]))
+      temp.name += ' (copy)'
+      this.aces.splice(index + 1, 0, temp)
+    },
     moveUpAce (index) {
       var temp = this.aces[index - 1]
       this.aces[index - 1] = this.aces[index]
@@ -568,6 +600,11 @@ export default {
         this.aces[index].expandIndex = this.aces[index].props.length - 1
       }, 500)
     },
+    copyProp (index, subindex) {
+      var temp = JSON.parse(JSON.stringify(this.aces[index].props[subindex]))
+      temp.label += ' (copy)'
+      this.aces[index].props.splice(subindex + 1, 0, temp)
+    },
     moveUpProp (index, subindex) {
       var temp = this.aces[index].props[subindex - 1]
       this.aces[index].props[subindex - 1] = this.aces[index].props[subindex]
@@ -594,6 +631,11 @@ export default {
       setTimeout(() => {
         this.aces[index].props[subindex].expandIndex = this.aces[index].props[subindex].comboParams.length - 1
       }, 500)
+    },
+    copyCombo (index, subindex, combo) {
+      var temp = JSON.parse(JSON.stringify(this.aces[index].props[subindex].comboParams[combo]))
+      temp.text += ' (copy)'
+      this.aces[index].props[subindex].comboParams.splice(combo + 1, 0, temp)
     },
     moveUpCombo (index, subindex, combo) {
       var temp = this.aces[index].props[subindex].comboParams[combo - 1]

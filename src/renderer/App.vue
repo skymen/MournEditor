@@ -196,6 +196,36 @@
         </v-tooltip>
 
         <v-toolbar-title v-text="title"></v-toolbar-title>
+
+        <v-spacer></v-spacer>
+        <v-dialog
+          v-model="notesDialog"
+          max-width="500px"
+        >
+          <v-tooltip bottom slot="activator">
+            <v-btn flat icon slot="activator">
+              <v-icon>speaker_notes</v-icon>
+            </v-btn>
+            Notes
+          </v-tooltip>
+          <v-card>
+            <v-card-title
+              class="headline grey-darken2"
+              primary-title
+            >
+              Notes
+            </v-card-title>
+            <v-card-text>
+              <v-textarea
+                box
+                label="Notes"
+                name="name"
+                v-model="notes"
+              ></v-textarea>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+        
       </v-toolbar>
       <v-content>
         <v-container fluid fill-height>
@@ -256,6 +286,8 @@ export default {
       { icon: 'build', title: 'ACES', to: '/aces', needReload: 2 },
       { icon: 'done_all', title: 'Export', to: '/export', needReload: 2 }
     ],
+    notes: '',
+    notesDialog: false,
     miniVariant: true,
     title: 'Mourn editor',
     saveFile: [
@@ -263,7 +295,8 @@ export default {
       'properties',
       'globalVarsCode',
       'functions',
-      'aces'
+      'aces',
+      'notes'
     ]
   }),
   mounted () {
@@ -293,6 +326,9 @@ export default {
           location.reload()
         }
       }
+    },
+    notes (val) {
+      localStorage.notes = val
     }
   },
   methods: {
@@ -304,12 +340,14 @@ export default {
               alert('An error occured while importing your file', err)
               return
             }
+            localStorage.savePath = fileName[0]
             var fileData = JSON.parse(data)
             this.saveFile.forEach(element => {
               if (fileData[element]) {
                 localStorage[element] = fileData[element]
               }
             })
+            this.notes = localStorage.notes
             this.$router.push('reload')
           })
         }

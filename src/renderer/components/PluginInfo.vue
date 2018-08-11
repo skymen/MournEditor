@@ -15,16 +15,16 @@
         <v-container grid-list-md>
           <v-layout column>
             <v-flex v-for="(item, index) in page" :key="index">
-              <v-text-field v-if="item.type == 'text'"
+              <v-text-field v-if="item.type === 'text'"
                 :name="index"
                 :label="item.label"
                 id="id"
                 v-model="pluginInfo[item.bound]"
               ></v-text-field>
 
-              <v-divider v-if="item.type == 'div'"></v-divider>
+              <v-divider v-if="item.type === 'div'"></v-divider>
               
-              <v-combobox v-if="item.type == 'combo'"
+              <v-combobox v-if="item.type === 'combo'"
                 v-model="pluginInfo[item.bound]"
                 :name="index"
                 :items="item.items"
@@ -35,7 +35,7 @@
                 hide-no-data
               ></v-combobox>
 
-              <v-checkbox v-if="item.type == 'check'"
+              <v-checkbox v-if="item.type === 'check'"
                 v-model="pluginInfo[item.bound]"
                 :label="item.label"
               ></v-checkbox>

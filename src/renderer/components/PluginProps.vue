@@ -37,7 +37,7 @@
           Property #{{index}} : {{property.name}}
           <v-spacer></v-spacer>
           <v-tooltip top>
-            <v-btn slot="activator" icon :disabled="index == 0" @click.stop="moveUp(index)">
+            <v-btn slot="activator" icon :disabled="index === 0" @click.stop="moveUp(index)">
               <v-icon>keyboard_arrow_up</v-icon>
             </v-btn>
             Move Up
@@ -59,16 +59,16 @@
         <v-layout column justify-center>
           <v-card>
             <v-flex xs10 offset-xs1 v-for="(item, k) in propPage" :key="k">
-              <v-text-field v-if="item.type == 'text'"
+              <v-text-field v-if="item.type === 'text'"
                 :name="index"
                 :label="item.label"
                 id="id"
                 v-model="property[item.bound]"
               ></v-text-field>
 
-              <v-divider v-if="item.type == 'div'"></v-divider>
+              <v-divider v-if="item.type === 'div'"></v-divider>
               
-              <v-combobox v-if="item.type == 'combo'"
+              <v-combobox v-if="item.type === 'combo'"
                 v-model="property[item.bound]"
                 :name="index"
                 :items="item.items"
@@ -76,7 +76,7 @@
                 :multiple="item.multiple"
               ></v-combobox>
 
-              <v-checkbox v-if="item.type == 'check'"
+              <v-checkbox v-if="item.type === 'check'"
                 v-model="property[item.bound]"
                 :label="item.label"
               ></v-checkbox>

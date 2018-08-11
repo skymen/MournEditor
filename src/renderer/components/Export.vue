@@ -27,6 +27,7 @@
 
 <script>
 var remote = require('electron').remote
+// var cp = require('child_process')
 var app = remote.app
 var dialog = remote.dialog
 const fs = require('fs-extra')
@@ -161,6 +162,7 @@ export default {
         var propsText = ''
 
         for (let j = 0; j < ace.props.length; j++) {
+          console.log('prop')
           const prop = ace.props[j]
           var paramtypec2 = prop.typeC2
           var paramtypec3 = prop.typeC3
@@ -178,23 +180,22 @@ export default {
               var comboText = '@@@PARAM_COMBO_ID ' + id + '\n@@@PARAM_COMBO_TEXT ' + text
               comboParams += comboText + '\n\n'
             })
-
-            var paramText = '@@@PARAMSTART\n' +
-            (hascomboprop ? '@@@IS_COMBO_PARAM ' + (prop.isCombo ? 'ligma' : '') + '\n' : '') +
-            '@@@PARAM_TYPE_C2 ' + paramtypec2 + '\n' +
-            '@@@PARAM_TYPE_C3 ' + paramtypec3 + '\n' +
-            '@@@PARAM_ID_C3 ' + paramidc3 + '\n' +
-            '@@@PARAM_LABEL ' + paramlabel + '\n' +
-            '@@@PARAM_DESCRIPTION ' + paramdescription + '\n' +
-            (prop.isCombo
-              ? '@@@PARAM_INIT_COMBO_C3' + paraminitcomboc3 + '\n' +
-              '@@@PARAM_INIT_COMBO_C2' + paraminitcomboc2 + '\n\n'
-              : '@@@PARAM_INIT_VALUE ' + paraminitialvalue + '\n'
-            ) +
-            comboParams + '\n'
-
-            propsText += paramText + '\n'
           }
+          var paramText = '@@@PARAMSTART\n' +
+          (hascomboprop ? '@@@IS_COMBO_PARAM ' + (prop.isCombo ? 'ligma' : '') + '\n' : '') +
+          '@@@PARAM_TYPE_C2 ' + paramtypec2 + '\n' +
+          '@@@PARAM_TYPE_C3 ' + paramtypec3 + '\n' +
+          '@@@PARAM_ID_C3 ' + paramidc3 + '\n' +
+          '@@@PARAM_LABEL ' + paramlabel + '\n' +
+          '@@@PARAM_DESCRIPTION ' + paramdescription + '\n' +
+          (prop.isCombo
+            ? '@@@PARAM_INIT_COMBO_C3' + paraminitcomboc3 + '\n' +
+            '@@@PARAM_INIT_COMBO_C2' + paraminitcomboc2 + '\n\n'
+            : '@@@PARAM_INIT_VALUE ' + paraminitialvalue + '\n'
+          ) +
+          comboParams + ''
+
+          propsText += paramText + '\n'
         }
         /* ------------------ */
         var script = ace.codeC2
@@ -213,8 +214,8 @@ export default {
         '@@@DISPLAY_STRING ' + displaystring + '\n' +
         '@@@DESCRIPTION ' + description + '\n\n' +
         '@@@SCRIPT_NAME ' + scriptname + '\n\n' +
-        (propsText === '' ? '' : '{\n' + propsText + '\n}') +
-        '###SCRIPT\n' + script + '\n###' + '\n' +
+        (propsText === '' ? '' : '{\n' + propsText + '}') +
+        '\n###SCRIPT\n' + script + '\n###' + '\n' +
         (acesc2edittime === 'Expression' ? '###SCRIPT_C3_RUNTIME\n' + scriptC3 + '\n###' + '\n' : '') +
         '}'
 
@@ -244,7 +245,7 @@ export default {
       '@@@PLUGIN_IS_OBJECT_TYPE ' + (pluginInfo.type === 'object' ? 'yes' : '') + '\n' +
       '@@@PLUGIN_IS_WORLD_TYPE ' + (pluginInfo.type === 'object' ? '' : 'yes') + '\n' +
       '@@@PLUGIN_FLAGS_C2 ' + this.getPluginFlagsC2(pluginInfo) + '\n' +
-      '@@@PLUGIN_ROTATABLE ' + pluginInfo.rotatable + '\n' +
+      '@@@PLUGIN_ISROTATABLE ' + pluginInfo.rotatable + '\n' +
       '@@@PLUGIN_CANBEBUNDELED_C3 ' + pluginInfo.canBeBundled + '\n' +
       '\n' + this.getPluginFlagsC3(pluginInfo) + '\n\n' +
       '@@@PLUGIN_SUPPORTED_RUNTIMES ' + this.getSupportedRuntimes(pluginInfo) + '\n'
@@ -285,7 +286,7 @@ export default {
       '###\n\n###ROUTINES\n' +
       functions.routines + '\n' +
       '###\n\n###INSTANCE_OBJECT\n' +
-      functions.instance + '\n' +
+      (functions.instance === '' ? '{}' : functions.instance) + '\n' +
       '###'
 
       return fileText

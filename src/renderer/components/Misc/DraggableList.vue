@@ -22,7 +22,7 @@
           </v-btn>
         </v-list-tile-action>
           <v-list-tile-title>
-            {{prename == '' ? (data[index].type === undefined ? 'ACE #' : data[index].type + ' #') : prename}}{{index}}: {{el.name}}
+            {{prename === '' ? (data[index].type === undefined ? 'ACE #' : data[index].type + ' #') : prename}}{{index}}: {{el.name}}
           </v-list-tile-title>
           <v-spacer/>
           <v-icon class="handle">drag_handle</v-icon>
